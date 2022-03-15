@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tournamco/backend.git"
+  },
+  "author": "tournamco",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tournamco/backend/issues"
+  },
+  "homepage": "https://github.com/tournamco/backend#readme",
+  "dependencies": {
+    "cookies": "^0.8.0",
+    "mongodb": "^4.4.1",
+    "nanoid": "^3.3.1"
+  }
+}
