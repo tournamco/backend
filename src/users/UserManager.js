@@ -16,16 +16,25 @@ class UserManager {
 	 * @param {String} email 
 	 * @param {String} gamertag 
 	 */
-	create(username, password, email, gamertag) {
-		const passwordHash = this.hashPassword(password);
+	async create(username, password, email, gamertag) {
 		const id = nanoid(16);
-		const user = new UserModel({id, username, password: passwordHash, email, gamertag});
+		const user = new UserModel({id, username, password, email, gamertag});
 
-		this.collection.insertOne(user.toDocument());
+		await this.collection.insertOne(user.toDocument());
+
+		return id;
 	}
 
 	hashPassword(password) {
 		return crypto.createHmac("sha512", config.users.passwordSalt).update(password).digest("hex");
+	}
+
+	async checkPasswordByUsername(username, password) {
+		const user = await this.collection.findOne({username});
+
+		if(user == undefined) return false;
+
+		return user.password == this.hashPassword(password);
 	}
 
 	async getFromSession(req) {

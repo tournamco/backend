@@ -16,20 +16,6 @@ const errors = {
 		message: "This action can only be performed when logged in.",
 		errno: index++
 	},
-	// When a password does not pass the regex for it.
-	INVALID_PASSWORD: {
-		code: 400, 
-		reason: "Bad Request", 
-		message: "The given password is invalid.",
-		errno: index++
-	},
-	// When an email does not pass the regex for it.
-	INVALID_EMAIL: {
-		code: 400, 
-		reason: "Bad Request", 
-		message: "The given email is invalid.",
-		errno: index++
-	},
 	// When the given email is already in use for another account.
 	ALREADY_USED_EMAIL: {
 		code: 400, 
@@ -37,17 +23,18 @@ const errors = {
 		message: "The given email is already used for another account.",
 		errno: index++
 	},
+	// When the given email is already in use for another account.
+	ALREADY_USED_USERNAME: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "The given username is already used for another account.",
+		errno: index++
+	},
 	// When the email and/or password did not match
 	INCORRECT_EMAIL_PASSWORD: {
 		code: 400, 
 		reason: "Bad Request", 
 		message: "The username and/or password is incorrect.",
-		errno: index++
-	},
-	ALREADY_USED_PIPE_NAME: {
-		code: 400, 
-		reason: "Bad Request", 
-		message: "The name for that pipe is already in use.",
 		errno: index++
 	},
 

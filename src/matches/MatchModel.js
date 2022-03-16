@@ -1,5 +1,5 @@
 class MatchModel {
-	constructor({name, type, datetime}) {
+	constructor({name, tournament, stage, round, startdate, teams}) {
 		this.name = name;
 		this.type = type;
 		this.datetime = datetime;

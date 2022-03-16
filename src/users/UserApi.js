@@ -1,8 +1,8 @@
 const logger = require("../logging/Logger");
 const ApiErrors = require("../net/server/UserApiErrors");
-const JSONHTTPRequest = require("../net/user/JSONHTTPRequest");
-const JSONHTTPResponse = require("../net/user/JSONHTTPResponse");
-const Router = require("../net/user/Router");
+const JSONHTTPRequest = require("../net/server/JSONHTTPRequest");
+const JSONHTTPResponse = require("../net/server/JSONHTTPResponse");
+const Router = require("../net/server/Router");
 const UserManager = require("./UserManager");
 
 class UserApi {
@@ -29,23 +29,19 @@ class UserApi {
 			return res.send(ApiErrors.NOT_WHEN_LOGGED_IN);
 		}
 
-		if(!new RegExp(this.users.options.passwordRegex).test(data.password)) {
-			return res.send(ApiErrors.INVALID_PASSWORD);
-		}
-
-		if(!new RegExp(this.users.options.emailRegex).test(data.email)) {
-			return res.send(ApiErrors.INVALID_EMAIL);
-		}
-
 		if(await this.users.emailExists(data.email).catch(e => {throw e})) {
 			return res.send(ApiErrors.ALREADY_USED_EMAIL);
 		}
 
+		if(await this.users.usernameExists(data.username).catch(e => {throw e})) {
+			return res.send(ApiErrors.ALREADY_USED_EMAIL);
+		}
+
 		const id = await this.users.create({
-			firstname: xss(data.firstname),
-			lastname: xss(data.lastname),
+			username: data.username,
+			gamertag: data.gamertag,
 			password: this.users.hashPassword(data.password),
-			email: xss(data.email)
+			email: data.email
 		}).catch(e => {throw e});
 
 		logger.debug(`A user was created with id ${id} and email ${email}.`);
@@ -65,7 +61,7 @@ class UserApi {
 			return res.send(ApiErrors.NOT_WHEN_LOGGED_IN);
 		}
 
-		if(!(await this.users.checkPasswordByEmail(data.email, data.password).catch(e=>{throw e}))) {
+		if(!(await this.users.checkPasswordByUsername(data.email, data.password).catch(e=>{throw e}))) {
 			return res.send(ApiErrors.INCORRECT_EMAIL_PASSWORD);
 		}
 
