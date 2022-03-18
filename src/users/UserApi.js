@@ -61,11 +61,13 @@ class UserApi {
 			return res.send(ApiErrors.NOT_WHEN_LOGGED_IN);
 		}
 
-		if(!(await this.users.checkPasswordByUsername(data.email, data.password).catch(e=>{throw e}))) {
+		console.log(data.username, data.password);
+
+		if(!(await this.users.checkPasswordByUsername(data.username, data.password).catch(e=>{throw e}))) {
 			return res.send(ApiErrors.INCORRECT_EMAIL_PASSWORD);
 		}
 
-		const id = await this.users.getIdFromEmail(data.email).catch(e=>{throw e});
+		const id = await this.users.getIdFromUsername(data.username).catch(e=>{throw e});
 		await this.users.sessions.createSession(res, id).catch(e=>{throw e});
 
 		logger.debug(`The user with id ${id} logged in.`);

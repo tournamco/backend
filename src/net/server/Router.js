@@ -1,5 +1,6 @@
 const {nanoid} = require("nanoid");
-const ApiErrors = require("../../../../common/userApi/UserApiErrors");
+const ApiErrors = require("./UserApiErrors");
+const logger = require("../../logging/Logger");
 
 class Router {
     constructor() {
