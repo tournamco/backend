@@ -25,7 +25,7 @@ class UserApi {
 	async create(req, res) {
 		const data = await req.data;
 
-		if(this.users.getFromSession(req) !== undefined) {
+		if(await this.users.getFromSession(req) !== undefined) {
 			return res.send(ApiErrors.NOT_WHEN_LOGGED_IN);
 		}
 
@@ -44,7 +44,7 @@ class UserApi {
 			email: data.email
 		}).catch(e => {throw e});
 
-		logger.debug(`A user was created with id ${id} and email ${email}.`);
+		logger.debug(`A user was created with id ${id} and email ${data.email}.`);
 
 		res.send({code: 200, id}, 200);
 	}

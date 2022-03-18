@@ -3,11 +3,17 @@ const { nanoid } = require("nanoid");
 const config = require("../../config.json");
 const SessionManager = require("./SessionManager");
 const UserModel = require("./UserModel");
+const UserApi = require("./UserApi");
 
 class UserManager {
-	constructor({database}) {
+	constructor({router}) {
+		this.sessions = new SessionManager();
+		new UserApi(this, router);
+	}
+
+	init({database}) {
 		this.collection = database.collection("users");
-		this.sessions = new SessionManager(database);
+		this.sessions.init({database});
 	}
 
 	/**
@@ -16,7 +22,7 @@ class UserManager {
 	 * @param {String} email 
 	 * @param {String} gamertag 
 	 */
-	async create(username, password, email, gamertag) {
+	async create({username, password, email, gamertag}) {
 		const id = nanoid(16);
 		const user = new UserModel({id, username, password, email, gamertag});
 
@@ -50,15 +56,21 @@ class UserManager {
 	}
 
 	async emailExists(email) {
-		const documents = await this.collection.find({email});
+		const documents = await (await this.collection.find({email})).toArray();
 
 		return documents.length > 0;
 	}
 
 	async usernameExists(username) {
-		const documents = await this.collection.find({username});
+		const documents = await (await this.collection.find({username})).toArray();
 
 		return documents.length > 0;
+	}
+
+	async getIdFromUsername(username) {
+		const document = await this.collection.findOne({username});
+
+		return document.id;
 	}
 }
 

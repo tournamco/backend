@@ -33,11 +33,11 @@ class SessionManager {
 
 		if(token === undefined) return;
 
-		const session = await this.collection.findOne({token}).catch(e => {throw e});
+		const session = await this.collection.findOne({token});
 
-		if(session === undefined) return;
+		if(session === null) return;
 
-		if((new Date().getTime() - session.createdAt.getTime()) > session.maxAge) {
+		if((new Date().getTime() - new Date(session.createdAt).getTime()) > session.maxAge) {
 			return await this.dropSession(session.token).catch(e => {throw e});
 		}
 
@@ -52,7 +52,7 @@ class SessionManager {
 	async createSession(res, userId, maxAge = this.options.defaultMaxAge) {
 		const token = nanoid(32);
 
-		await this.collection.insertOne({token, maxAge, user: userId})
+		await this.collection.insertOne({token, maxAge, user: userId, createdAt: new Date().getTime()})
 
 		res.cookies.set(this.options.cookieName, token, {maxAge, signed: true});
 	}
