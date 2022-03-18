@@ -4,15 +4,14 @@ const config = require("../../config.json");
 class DatabaseHandler {
 	constructor() {
 		this.config = config.database;
-		this.client = new MongoClient({
-			url: this.config.url
-		});
+		this.client = new MongoClient(this.config.url);
 
 		this.dbName = this.config.database;
 	}
 
 	async connect() {
-		await this.client.connect();
+		this.client.on("error", e => console.error(e));
+		await this.client.connect().catch(e=>{throw e});
 		this.db = this.client.db(this.dbName);
 	}
 

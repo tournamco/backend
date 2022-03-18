@@ -8,9 +8,12 @@ class SessionManager {
 	/**
 	 * @param {DatabaseHandler} database
 	 */
-	constructor(database) {
-		this.collection = database.collection("sessions");
+	constructor() {
 		this.options = config.sessions;
+	}
+
+	init({database}) {
+		this.collection = database.collection("sessions");
 	}
 
 	/**

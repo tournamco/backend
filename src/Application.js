@@ -6,15 +6,17 @@ class Application {
 	constructor() {
 		this.db = new DatabaseHandler();
 		this.apiServer = new ApiServer();
-		this.users = new UserManager({database: this.db, apiServer: this.apiServer});
+		this.users = new UserManager({router: this.apiServer.router});
 	}
 
 	async start() {
 		await this.db.connect();
+		await this.users.init({database: this.db});
 		await this.apiServer.listen();
 	}
 
 	async stop() {
+		await this.apiServer.close();
 		await this.db.close();
 	}
 }
