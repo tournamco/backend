@@ -1,5 +1,7 @@
+const StageModel = require("./StageModel");
+
 class TournamentModel {
-	constructor({id, name, game, stages, teams, organizer, isPublic, color, teamSize}) {
+	constructor({id, name, game, stages, teams, organizer, isPublic, color, teamSize, gameLength, currentStage}) {
 		this.id = id;
 		this.name = name;
 		this.game = game;
@@ -8,10 +10,31 @@ class TournamentModel {
         this.isPublic = isPublic;
         this.color = color;
         this.teamSize = teamSize;
+        this.gameLength = gameLength;
+        this.currentStage = currentStage;
 
         this.stages = stages.map(stage => new StageModel(stage, this));
 	}
 
+	addStage(stage) {
+		this.stages.push(stage);
+	}
+
+	addTeam(team) {
+		this.teams.push(team);
+	}
+
+	get maxParticipants() {
+		if(this.stages.length === 0) return 0;
+		
+		return this.stages[0].numberOfParticipants;
+	}
+
+	getFreeKey() {
+		if(this.stages.length === 0) return;
+
+		return this.stages[0].freeKeys.shift();
+	}
 
 	toDocument() {
 		return {
@@ -23,7 +46,9 @@ class TournamentModel {
 			organizer: this.organizer,
 			isPublic: this.isPublic,
 			color: this.color,
-			teamSize: this.teamSize
+			teamSize: this.teamSize,
+			gameLength: this.gameLength,
+			currentStage: this.currentStage
 		};
 	}
 
@@ -37,7 +62,9 @@ class TournamentModel {
 			organizer: this.organizer,
 			isPublic: this.isPublic,
 			color: this.color,
-			teamSize: this.teamSize
+			teamSize: this.teamSize,
+			gameLength: this.gameLength,
+			currentStage: this.currentStage
 		}
 	}
 }
