@@ -1,0 +1,23 @@
+{
+	"database": {
+		"url": "mongodb://127.0.0.1:27017/",
+		"database": "tournamco"
+	},
+	"users": {
+		"passwordSalt": "password123"
+	},
+	"sessions": {
+		"cookieName": "_session",
+		"defaultMaxAge": 604800000
+	},
+	"api": {
+		"port": 8183,
+		"cookiesKeys": ["example"]
+	},
+	"invites": {
+		"defaultMaxAge": 604800000
+	},
+	"images": {
+		"folder": "./images"
+	}
+}
