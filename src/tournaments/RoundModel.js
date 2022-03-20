@@ -6,9 +6,15 @@ class RoundModel {
         this.stage = parent;
     }
 
+    addMatch(match) {
+        this.matches.push(match.id);
+    }
+
     toDocument() {
         return {
-            
+            id: this.id,
+            name: this.name,
+            matches: this.matches
         }
     }
 }
