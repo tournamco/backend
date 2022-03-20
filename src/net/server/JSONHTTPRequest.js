@@ -36,6 +36,10 @@ class JSONHTTPRequest {
         });
     }
 
+    header(name) {
+        return this.incomingMessage.headers[name];
+    }
+
     get path() {
         return this.url.pathname;
     }
