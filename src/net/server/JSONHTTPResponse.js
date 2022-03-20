@@ -5,8 +5,13 @@ class JSONHTTPResponse {
     }
 
     send(data = {}, code = 200) {
+        this.setContentType("application/json");
         this.serverResponse.statusCode = data.errno !== undefined ? data.code : code;
         this.serverResponse.end(JSON.stringify(data));
+    }
+
+    setContentType(type) {
+        this.serverResponse.setHeader("Content-Type", type);
     }
 }
 

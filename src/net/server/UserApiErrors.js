@@ -37,6 +37,55 @@ const errors = {
 		message: "The username and/or password is incorrect.",
 		errno: index++
 	},
+	// When the tournament name is missing
+	MISSING: name => {return {
+		code: 400, 
+		reason: "Bad Request", 
+		message: `The input ${name} was not supplied.`,
+		errno: index++
+	};},
+	INCORRECT_OPTION_VALUES: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "The given options were incorrect.",
+		errno: index++
+	},
+	INCORRECT_TOKEN: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "The given token is incorrect.",
+		errno: index++
+	},
+	FULL_TEAM: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "The team is already full.",
+		errno: index++
+	},
+	FULL_TOURNAMENT: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "The tournament is already full.",
+		errno: index++
+	},
+	ALREADY_IN_TOURNAMENT: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "The user is already in that tournament.",
+		errno: index++
+	},
+	INCORRECT_FILE_TYPE: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "The file is of an incorrect type.",
+		errno: index++
+	},
+	PROOF_ALREADY_SET: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "This proof has already been set.",
+		errno: index++
+	},
 
 	/* Basic errors */
 	UNAUTHORIZED: {
