@@ -1,9 +1,10 @@
 const { nanoid } = require("nanoid");
 const moment = require("moment");
 const RoundModel = require("./RoundModel");
+const PoolsStageBehaviour = require("./behaviour/PoolsStageBehaviour");
 
 class StageModel {
-    constructor({id, type, name, numberOfParticipants, rounds, minimalDate, maximalDate, minimalTime, maximalTime, options, freeKeys}, parent) {
+    constructor({id, type, name, numberOfParticipants, rounds, minimalDate, maximalDate, minimalTime, maximalTime, options, freeKeys, winners}, parent) {
         this.id = id;
         this.type = type;
         this.name = name;
@@ -15,105 +16,51 @@ class StageModel {
         this.maximalTime = moment(maximalTime, "hh:mm");
         this.options = options;
         this.freeKeys = freeKeys;
+        this.winners = winners;
         this.tournament = parent;
+        this.behaviour = this.getTypedBehaviour(this.type);
     }
 
-    getWinners(matchManager, teamManager) {
-        switch(this.type) {
+    getTypedBehaviour(type) {
+        switch(type) {
             case "pools":
-                return getPoolsWinners(matchManager, teamManager);
+                return new PoolsStageBehaviour(this);
         }
     }
 
-    getPoolsWinners(matchManager, teamManager) {
-        const teams = {};
-
+    async isFinished(matchManager) {
         for(const round of this.rounds) {
-            for(let match of round.matches) {
-                match = matchManager.getModel({id: match});
-                const winner = 
+            for(const id of round.matches) {
+                const match = await matchManager.getModel({id});
 
-                if(teams[])
+                if(match === undefined) continue;
+                if(match.isDecided()) continue;
+
+                return false;
             }
-        }
-    }
-
-    get matchLength() {
-        switch(this.type) {
-            case "pools":
-                return this.options.bestOf * this.tournament.gameLength;
-        }
-    }
-
-    generateRounds(matchManager) {
-        switch(this.type) {
-            case "pools":
-                return this.generatePoolsRounds(matchManager);
-        }
-    }
-
-    async generatePoolsRounds(matchManager) {
-        let rounds = [];
-        const numberOfPools = Math.ceil(this.numberOfParticipants / this.options.poolSize);
-        const pools = [];
-        const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        for(let i = 0; i < numberOfPools; i++) {
-            const pool = [];
-
-            for(let j = 0; j < this.options.poolSize; j++) {
-                const id = nanoid(8);
-                pool.push(id);
-                this.freeKeys.push(id);
-            }
-            
-            pools.push(pool);
-        }
-
-        this.options.pools = pools;
-
-        for(let i = 0; i < this.options.matchesPerPool; i++) {
-            const round = new RoundModel({id: nanoid(16), name: `Round ${i+1}`, matches: []}, this);
-            
-            for(let j = 0; j < pools.length; j++) {
-                let pool = pools[j];
-                let x = 0;
-
-                for(let l = 0; l < pool.length/2; l++) {
-                    const match = await matchManager.create({name: `Match ${ALPHABET.charAt(j)}${x+1}`, keys: [pool[l], pool[pool.length-l-1]]}, this.options.bestOf);
-                    round.addMatch(match);
-                    x++;
-                }
-
-                const last = pool.pop();
-                pools[j].splice(1, 0, last);
-            }
-
-            rounds.push(round);
-        }
-
-        return rounds;
-    }
-
-    isValid() {
-        switch(this.type) {
-            case "pools":
-                if(this.options.poolSize <= 0) return false;
-                if(this.options.poolSize%2 == 1) return false;
-                if(this.options.numberOfWinners <= 0) return false;
-                if(this.options.matchesPerPool <= 0) return false;
-                if(this.options.bestOf <= 0) return false;
-                if(this.options.numberOfWinners > this.options.poolSize) return false;
-                break;
-            case "single":
-                break;
-            case "double":
-                break;
-            case "swiss":
-                break;
         }
 
         return true;
+    }
+
+    getWinnersFromMatches(matchManager, teamManager) {
+        return this.behaviour.getWinnersFromMatches(matchManager, teamManager);
+    }
+
+    addWinner() {
+
+    }
+
+    get matchLength() {
+        return this.behaviour.matchLength;
+    }
+
+    generateRounds(matchManager) {
+        return this.behaviour.generateRounds(matchManager);
+    }
+
+    isValid() {
+        return this.behaviour.isValid();
     }
 
     toDocument() {
@@ -128,7 +75,8 @@ class StageModel {
             maximalDate: this.maximalDate.format("YYYY-MM-DD"),
             maximalTime: this.maximalTime.format("hh:mm"),
             options: this.options,
-            freeKeys: this.freeKeys
+            freeKeys: this.freeKeys,
+            winners: this.winners
         };
     }
 }

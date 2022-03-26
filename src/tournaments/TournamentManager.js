@@ -34,6 +34,7 @@ class TournamentManager {
                 maximalTime: stageData.maximalTime,
                 options: stageData.options,
                 freeKeys: [],
+                winners: undefined
             }, tournament);
 
             if(!stage.isValid()) return undefined;
@@ -51,29 +52,36 @@ class TournamentManager {
     }
 
     async matchFinished(id, match) {
-        const tournament = this.getModel({id});
+        const tournament = await this.getModel({id});
+
+        if(tournament == null) return;
 
         if(match.isDecided()) {
 			await this.teams.updateKeys(match);
 		}
 
-        if(await this.isStageFinished(tournament)) {
+        const stage = tournament.stages[tournament.currentStage];
+
+        for(const teamId of match.teams) {
+            const team = await this.teams.getModel({id: teamId});
+
+            if(team == undefined) continue;
+            if(!await stage.teamPlayedAllMatches(team))
+            if(!await this.isWinner(team)) continue;
+            
+            await this.advanceTeamToNextStage(tournament, team);
+        }
+
+        await this.checkIfTeamIsStageWinner(tournament, match);
+
+        if(await stage.isFinished(tournament, this.matches)) {
             await this.stageFinished(tournament);
         }
     }
 
-    async isStageFinished(tournament) {
+    async advanceTeamToNextStage() {
         const stage = tournament.stages[tournament.currentStage];
 
-        for(const round of stage.rounds) {
-            for(const match of round.matches) {
-                if((await this.matches.getModel(match)).isDecided()) continue;
-
-                return false;
-            }
-        }
-
-        return true;
     }
 
     async stageFinished(tournament) {
@@ -85,7 +93,7 @@ class TournamentManager {
         }
 
         const stage = tournament.stages[tournament.currentStage];
-        const winners = oldStage.getWinners();
+        //const winners = oldStage.getWinners();
 
     }
 
@@ -94,7 +102,7 @@ class TournamentManager {
     }
 
     async addTeam(id, team) {
-		const tournament = new TournamentModel(await this.get({id}));
+		const tournament = await this.getModel({id});
 
 		if(tournament.teams.length === tournament.maxParticipants) return;
 
@@ -112,7 +120,11 @@ class TournamentManager {
     }
 
     async getModel(data) {
-        return new TournamentModel(await this.get(data));
+        const contents = await this.get(data);
+
+		if(contents == undefined) return;
+
+        return new TournamentModel(contents);
     }
 }
 

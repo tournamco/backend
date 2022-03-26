@@ -19,8 +19,6 @@ class ImageApi {
 
 		const extension = mime.extension(req.header("content-type"));
 
-		console.log(extension);
-
 		if(extension !== "jpeg" && extension !== "png") {
 			return res.send(ApiErrors.INCORRECT_FILE_TYPE);
 		}
