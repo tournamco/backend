@@ -10,7 +10,7 @@ class MatchManager {
 		this.disputes = disputes;
 	}
 
-	async create({name, startDate, endDate, keys, newKeys}, numberOfGames) {
+	async create({name, startDate, endDate, keys, newKeys, tournament}, numberOfGames) {
 		const id = nanoid(16);
 		const games = Array(numberOfGames).fill(1).map(() => {
 			const stage = {};
@@ -29,7 +29,7 @@ class MatchManager {
 			teams[key] = undefined;
 			finished[key] = false;
 		});
-		const match = new MatchModel({id, name, startDate, endDate, keys, newKeys, games, finished, teams});
+		const match = new MatchModel({id, name, startDate, endDate, keys, newKeys, games, finished, teams, tournament});
 
 		await this.collection.insertOne(match.toDocument());
 
@@ -40,14 +40,20 @@ class MatchManager {
 		return this.collection.updateOne({id}, {$set: {startDate: startDate.valueOf(), endDate: endDate.valueOf()}});
 	}
 
-	async addGameProof(id, game, key, proof) {
-		const match = await this.get({id});
+	async addGameProof(id, gameIndex, key, proof) {
+		const match = await this.getModel({id});
 
-		if(match == null) return;
+		if(match == undefined) return false;
 
-		match.getGame(game).proofs[key] = proof;
+		const game = match.getGame(gameIndex);
+
+		if(game == undefined) return false;
+
+		game.proofs[key] = proof;
 
 		await this.collection.replaceOne({id}, match);
+
+		return true;
 	}
 
 	async setFinished(id, key, team) {
@@ -63,29 +69,50 @@ class MatchManager {
 		return match;
 	}
 
-	async decide(id, tournament) {
+	async isFinished(id, key) {
+		const match = await this.get({id});
+
+		if(match == null) return;
+
+		return match.finished[key];
+	}
+
+	async decide(id) {
 		const match = await this.getModel({id});
 
 		for(let i = 0; i < match.games.length; i++) {
 			const game = match.games[i];
 
-			if(game.areScoresUndisputed(this.proofs))  {
-				await this.setGameScores(match.id, i, game(await game.getSetProofs(this.proofs))[0]);
+			if(await game.areScoresUndisputed(this.proofs))  {
+				await this.setGameScores(match.id, i, (await game.getSetProofs(this.proofs))[0].scores);
 			}
 			else {
-				// TODO: Create dispute
+				await this.disputes.create({match: id, tournament: match.tournament, game: i});
 			}
 		}
 	}
 
-	setGameScores
+	async setGameScores(id, gameIndex, scores) {
+		const match = await this.getModel({id});
+
+		if(match == undefined) return;
+
+		const game = match.getGame(gameIndex);
+		game.scores = scores;
+
+		await this.collection.replaceOne({id}, match);
+	}
 
 	get(data) {
 		return this.collection.findOne(data);
 	}
 
 	async getModel(data) {
-        return new MatchModel(await this.get(data));
+		const contents = await this.get(data);
+
+		if(contents == undefined) return;
+
+        return new MatchModel(contents);
     }
 }
 

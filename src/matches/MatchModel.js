@@ -1,7 +1,7 @@
 const GameModel = require("./GameModel");
 
 class MatchModel {
-	constructor({id, name, startDate, endDate, keys, newKeys, games, finished}) {
+	constructor({id, name, startDate, endDate, keys, newKeys, games, finished, teams, tournament}) {
 		this.id = id;
 		this.name = name;
 		this.startDate = startDate;
@@ -10,6 +10,8 @@ class MatchModel {
 		this.newKeys = newKeys;
 		this.games = games.map(game => new GameModel(game));
 		this.finished = finished;
+		this.teams = teams;
+		this.tournament = tournament;
 	}
 
 	get scores() {
@@ -33,7 +35,9 @@ class MatchModel {
 		let winningScore = 0;
 
 		for(const key of Object.keys(scores)) {
-			
+			if(scores[key] <= winningScore) continue;
+
+			winningKey = key;
 		}
 
 		return winningKey;
@@ -70,7 +74,9 @@ class MatchModel {
 			keys: this.keys,
 			newKeys: this.newKeys,
 			games: this.games.map(game => game.toDocument()),
-			finished: this.finished
+			finished: this.finished,
+			teams: this.teams,
+			tournament: this.tournament
 		};
 	}
 }
