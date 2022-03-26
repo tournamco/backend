@@ -18,6 +18,10 @@ class TeamModel {
 		this.members = this.members.filter(member => member != id);
 	}
 
+	setLeader(id) {
+		this.leader = id;
+	}
+
 	toDocument() {
 		return {
 			id: this.id,
