@@ -2,8 +2,8 @@ const { nanoid } = require("nanoid");
 const DisputeApi = require("./DisputeApi");
 
 class DisputeManager {
-	constructor({router, tournaments, proofs, matches}) {
-		new DisputeApi(router, tournaments, proofs, matches, this);
+	constructor({router, tournaments, proofs, users, matches}) {
+		new DisputeApi(router, tournaments, users, proofs, matches, this);
 	}
 
 	init({database}) {
@@ -20,6 +20,10 @@ class DisputeManager {
 
 	get(data) {
 		return this.collection.findOne(data);
+	}
+
+	remove(data) {
+		return this.collection.deleteOne(data);
 	}
 }
 

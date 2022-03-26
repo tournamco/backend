@@ -1,14 +1,17 @@
+const ApiErrors = require("../net/server/UserApiErrors");
+
 class DisputeApi {
-	constructor(router, tournaments, proofs, matches, disputes) {
+	constructor(router, tournaments, users, proofs, matches, disputes) {
 		this.proofs = proofs;
 		this.tournaments = tournaments;
+		this.users = users;
 		this.matches = matches;
 		this.disputes = disputes;
 
 		router.post("/dispute/resolve", (req, res) => this.resolve(req, res));
 	}
 
-	resolve(req, res) {
+	async resolve(req, res) {
 		const data = await req.data;
 		const user = await this.users.getFromSession(req).catch(e=>{throw e});
 
@@ -47,9 +50,14 @@ class DisputeApi {
 		}
 
 		const game = match.getGame(dispute.game);
-		await game.setScores(await this.proofs.getModel({id: game.proofs[data.key]}));
+		const proof = await this.proofs.getModel({id: game.proofs[data.key]});
+		await this.matches.setGameScores(match.id, dispute.game, proof.scores);
 
-		this.tournaments.matchFinished(tournament.id, match);
+		await this.disputes.remove({id: dispute.id});
+
+		await this.tournaments.matchFinished(tournament.id, match);
+
+		res.send({code: 200}, 200);
 	}
 }
 

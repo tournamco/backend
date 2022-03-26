@@ -1,13 +1,15 @@
 class GameModel {
-	constructor({id, scores, proofs}) {
-		this.id = id;
+	constructor({scores, proofs}) {
 		this.scores = scores;
 		this.proofs = proofs;
 	}
 
 	isDecided() {
 		for(const key of Object.keys(this.scores)) {
-			if(this.scores[key] == undefined) return false;
+			if(this.scores[key] != undefined) continue;
+			if(this.proofs[key] == undefined) continue;
+
+			return false;
 		}
 
 		return true;
@@ -23,9 +25,9 @@ class GameModel {
 				if(!list.includes(score)) list.push(score);
 
 				return list;
-			}, list);
+			}, []);
 
-			if(scores.length === 1) continue;
+			if(scores.length <= 1) continue;
 
 			return false;
 		}
@@ -63,7 +65,6 @@ class GameModel {
 
 	toDocument() {
 		return {
-			id: this.id,
 			scores: this.scores,
 			proofs: this.proofs
 		}
