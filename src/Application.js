@@ -18,7 +18,7 @@ class Application {
 		this.tournaments = new TournamentManager({matches: this.matches, users: this.users, router: this.apiServer.router});
 		this.teams = new TeamManager({router: this.apiServer.router, matches: this.matches, users: this.users, tournaments: this.tournaments});
 		this.proofs = new ProofManager({router: this.apiServer.router, matches: this.matches, users: this.users, teams: this.teams});
-		this.disputes = new DisputeManager({router: this.apiServer.router, tournaments: this.tournaments, proofs: this.proofs, matches: this.matches});
+		this.disputes = new DisputeManager({router: this.apiServer.router, tournaments: this.tournaments, users: this.users, proofs: this.proofs, matches: this.matches});
 	}
 
 	async start() {
@@ -26,6 +26,7 @@ class Application {
 		await this.images.init({database: this.db});
 		this.proofs.init({database: this.db});
 		this.users.init({database: this.db});
+		this.disputes.init({database: this.db});
 		this.matches.init({database: this.db, proofs: this.proofs, disputes: this.disputes});
 		this.tournaments.init({database: this.db, teams: this.teams});
 		this.teams.init({database: this.db});
