@@ -25,7 +25,7 @@ class TeamManager {
 	}
 
 	async addMember(id, member) {
-		const team = new TeamModel(await this.get({id}));
+		const team = this.getModel({id});
 
 		if(team.members.length === team.teamSize) return;
 
@@ -34,8 +34,16 @@ class TeamManager {
 		await this.collection.replaceOne({id}, team.toDocument());
 	}
 
+	async setLeader(id, user) {
+		const team = this.getModel({id});
+
+		team.setLeader(user);
+
+		await this.collection.replaceOne({id}, team.toDocument());
+	}
+
 	async removeMember(id, member) {
-		const team = new TeamModel(await this.get({id}));
+		const team = this.getModel({id});
 
 		if(team.members.length === team.teamSize) return;
 
@@ -56,19 +64,37 @@ class TeamManager {
 		return false;
 	}
 
+	async checkIfLeaderInTournament(id, user) {
+		const tournament = await this.tournaments.getModel({id});
+
+		for(const id of tournament.teams) {
+			const team = await this.get({id});
+			
+			if(team.leader == user) return true;
+		}
+
+		return false;
+	}
+
 	async updateKeys(match) {
+		if(match.newKeys == undefined) return;
+
 		for(let team of match.teams) {
 			team = await this.getModel({id: team});
 
-			if(match.newKeys != undefined) {
-				if(match.isWinner(team.key)) {
-					await this.teams.setNewKey(team.id, match.newKeys[0]);
-				}
-				else {
-					await this.teams.setNewKey(team.id, match.newKeys[1]);
-				}
+			if(match.isWinner(team.key)) {
+				await this.teams.setNewKey(team.id, match.newKeys[0]);
+			}
+			else {
+				await this.teams.setNewKey(team.id, match.newKeys[1]);
 			}
 		}
+	}
+
+	async nameExists(name) {
+		const documents = await (await this.collection.find({name})).toArray();
+
+		return documents.length > 0;
 	}
 
 	setKey(id, key) {
@@ -80,7 +106,11 @@ class TeamManager {
 	}
 
 	async getModel(data) {
-		return new TeamModel(await this.get(data));
+		const contents = await this.get(data);
+
+		if(contents == undefined) return;
+
+        return new TeamModel(contents);
 	}
 }
 

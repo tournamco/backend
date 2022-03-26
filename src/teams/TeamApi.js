@@ -40,29 +40,64 @@ class TeamApi {
 			return res.send(ApiErrors.UNAUTHORIZED);
 		}
 
-		let name;
-
-		if(data.name != undefined && data.name !== "") {
-			name = data.name;
-		}
-		else if(user.id === tournament.organizer) {
-			name = "Temporary name";
+		if(user.id === tournament.organizer && !data.join) {
+			await this.createEmptyTeam(data, res, tournament);
 		}
 		else {
+			await this.createNormalTeam(data, res, user, tournament);
+		}
+	}
+
+	async createEmptyTeam(data, res, tournament) {
+		const team = await this.teams.create({
+			name: "Temporary Name",
+			leader: undefined,
+			tournament: tournament.id,
+			teamSize: tournament.teamSize,
+			isPublic: data.isPublic
+		});
+
+		const key = await this.tournaments.addTeam(tournament.id, team.id);
+
+		if(key === undefined) {
+			// TODO: delete the team again
+			return res.send(ApiErrors.FULL_TOURNAMENT);
+		}
+		
+		await this.teams.setKey(team.id, key);
+		const invite = await this.teams.invites.create({team: team.id});
+
+		logger.debug(`An empty team was created with id ${team.id} for the tournament ${tournament.id}.`);
+
+		res.send({code: 200, id: team.id, token: invite}, 200);
+	}
+
+	async createNormalTeam(data, res, user, tournament) {
+		if(data.name == undefined || data.name === "") {
 			return res.send(ApiErrors.MISSING("name"));
 		}
 
+		if(await this.teams.nameExists(data.name)) {
+			return res.send(ApiErrors.ALREADY_USED_NAME);
+		}
+
+		if(await this.teams.checkIfInTournament(tournament.id, user.id)) {
+			return res.send(ApiErrors.ALREADY_IN_TOURNAMENT);
+		}
+
+		if(await this.teams.checkIfLeaderInTournament(tournament.id, user.id)) {
+			return res.send(ApiErrors.ALREADY_IN_TOURNAMENT_LEADER);
+		}
+
 		const team = await this.teams.create({
-			name,
+			name: data.name,
 			leader: user.id,
 			tournament: tournament.id,
 			teamSize: tournament.teamSize,
 			isPublic: data.isPublic
 		});
 
-		if(user.id !== tournament.organizer || data.join) {
-			await this.teams.addMember(team.id, user.id);
-		}
+		await this.teams.addMember(team.id, user.id);
 
 		const key = await this.tournaments.addTeam(tournament.id, team.id);
 
@@ -116,6 +151,11 @@ class TeamApi {
 		await this.teams.addMember(team.id, user.id);
 		await this.teams.invites.drop(data.token);
 
+		if(team.leader === undefined) {
+			await this.teams.setLeader(team.id, user.id);
+			return res.send({code: 200, id: team.id, leader: true}, 200);
+		}
+
 		res.send({code: 200, id: team.id, leader: user.id === team.leader}, 200);
 	}
 
@@ -146,6 +186,8 @@ class TeamApi {
 		if(tournament === undefined) {
 			return res.send(ApiErrors.NOT_FOUND);
 		}
+
+		// FIX
 
 		if(user.id !== tournament.organizer && user.id !== team.leader) {
 			return res.send(ApiErrors.UNAUTHORIZED);
@@ -192,17 +234,21 @@ class TeamApi {
 			return res.send(ApiErrors.UNAUTHORIZED);
 		}
 
+		if(await this.matches.isFinished(match.id, team.key)) {
+			return res.send(ApiErrors.ALREADY_FINISHED);
+		}
+
 		await this.matches.setFinished(match.id, team.key, team.id);
 
 		match = await this.matches.getModel({id: match.id});
 
 		if(!match.isFinished() || match.isDecided()) {
-			res.send({code: 200}, 200);
+			return res.send({code: 200}, 200);
 		}
 
 		await this.matches.decide(match.id, team.tournament);
 
-		this.tournaments.matchFinished(team.tournament, match);
+		await this.tournaments.matchFinished(team.tournament, match);
 	}
 }
 
