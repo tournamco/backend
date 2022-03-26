@@ -9,6 +9,7 @@ class ProofApi {
 		
 		router.post("/proof/create", (req, res) => this.create(req, res));
 		router.post("/proof/image/add", (req, res) => this.addImage(req, res));
+		router.post("/proof/scores/set", (req, res) => this.setScores(req, res))
 	}
 
 	async create(req, res) {
@@ -59,10 +60,15 @@ class ProofApi {
 		}
 
 		const proof = await this.proofs.create({
-			keys: match.keys
+			keys: match.keys,
+			team: team.id
 		});
 
-		await this.matches.addGameProof(match, game, team.key, proof.id);
+		const success = await this.matches.addGameProof(match.id, data.game, team.key, proof.id);
+
+		if(!success) {
+			return res.send(ApiErrors.INTERNAL_SERVER_ERROR);
+		}
 
 		res.send({code: 200, id: proof.id}, 200);
 	}
@@ -119,6 +125,56 @@ class ProofApi {
 
 	removeImage() {
 
+	}
+
+	async setScores(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		if(data.match == undefined || data.match === "") {
+			return res.send(ApiErrors.MISSING("match"));
+		}
+
+		if(data.proof == undefined || data.proof === "") {
+			return res.send(ApiErrors.MISSING("proof"));
+		}
+
+		if(data.scores == undefined || data.scores === "") {
+			return res.send(ApiErrors.MISSING("proof"));
+		}
+
+		const match = await this.matches.getModel({id: data.match});
+
+		if(match === undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		let team;
+		
+		for(const key of match.keys) {
+			const teamFromKey = await this.teams.get({key});
+			
+			if(teamFromKey == null || user.id != teamFromKey.leader) continue;
+
+			team = teamFromKey;
+			break;
+		}
+
+		if(team === undefined || team.key !== await this.proofs.getTeam(data.proof)) {
+			return res.send(ApiErrors.UNAUTHORIZED);
+		}
+
+		const success = await this.proofs.setScores(data.proof, data.scores);
+
+		if(!success) {
+			return res.send(ApiErrors.INCORRECT_SCORES);
+		}
+
+		res.send({code: 200}, 200);
 	}
 }
 

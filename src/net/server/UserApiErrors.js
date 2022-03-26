@@ -74,6 +74,12 @@ const errors = {
 		message: "The user is already in that tournament.",
 		errno: index++
 	},
+	ALREADY_IN_TOURNAMENT_LEADER: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "The user is already a leader in that tournament.",
+		errno: index++
+	},
 	INCORRECT_FILE_TYPE: {
 		code: 400, 
 		reason: "Bad Request", 
@@ -84,6 +90,24 @@ const errors = {
 		code: 400, 
 		reason: "Bad Request", 
 		message: "This proof has already been set.",
+		errno: index++
+	},
+	INCORRECT_SCORES: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "The given scores are incorrect.",
+		errno: index++
+	},
+	ALREADY_USED_NAME: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "The given name is already used for another team.",
+		errno: index++
+	},
+	ALREADY_FINISHED: {
+		code: 400, 
+		reason: "Bad Request", 
+		message: "That match is already finished for you.",
 		errno: index++
 	},
 
@@ -97,7 +121,7 @@ const errors = {
 	NOT_FOUND: {
 		code: 404, 
 		reason: "Not found", 
-		message: "The requested api path could not be found.",
+		message: "The requested api path or resource could not be found.",
 		errno: index++
 	},
 	
