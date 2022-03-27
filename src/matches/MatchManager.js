@@ -114,6 +114,21 @@ class MatchManager {
 
         return new MatchModel(contents);
     }
+
+	delete(data) {
+		return this.collection.deleteMany(data);
+	}
+
+	async getArrayByIds(array) {
+		const list = await (await this.collection.find({id:{$in:array}})).toArray();
+		const matches = [];
+
+		for(const item of list) {
+			matches.push(new MatchModel(item));
+		}
+
+		return matches;
+	}
 }
 
 module.exports = MatchManager;

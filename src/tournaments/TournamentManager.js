@@ -115,6 +115,16 @@ class TournamentManager {
         return key;
 	}
 
+    async deleteById(id) {
+        await this.collection.deleteOne({id});
+        await this.teams.delete({id});
+        await this.matches.delete({id});
+    }
+
+    getTeams(id) {
+        return this.teams.getTournamentTeams(id);
+    }
+
     get(data) {
         return this.collection.findOne(data);
     }

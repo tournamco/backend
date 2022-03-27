@@ -112,6 +112,22 @@ class TeamManager {
 
         return new TeamModel(contents);
 	}
+
+	async getTournamentTeams(tournament) {
+		const teams = await (await this.collection.find({tournament})).toArray();
+
+		return teams.map(team => new TeamModel(team));
+	}
+
+	delete(data) {
+		return this.collection.deleteMany(data);
+	}
+
+	async getUserTeams(user) {
+		const teams = await (await this.collection.find({"members": {"$in": [user.id]}})).toArray();
+
+		return teams.map(team => new TeamModel(team));
+	}
 }
 
 module.exports = TeamManager;
