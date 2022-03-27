@@ -2,6 +2,9 @@ const { nanoid } = require("nanoid");
 const moment = require("moment");
 const RoundModel = require("./RoundModel");
 const PoolsStageBehaviour = require("./behaviour/PoolsStageBehaviour");
+const SwissEliminationStageBehaviour = require("./behaviour/SwissEliminationStageBehaviour");
+const SingleEliminationStageBehaviour = require("./behaviour/SingleEliminationStageBehaviour");
+const DoubleEliminationStageBehaviour = require("./behaviour/DoubleEliminationStageBehaviour");
 
 class StageModel {
     constructor({id, type, name, numberOfParticipants, rounds, minimalDate, maximalDate, minimalTime, maximalTime, options, freeKeys, winners}, parent) {
@@ -25,6 +28,12 @@ class StageModel {
         switch(type) {
             case "pools":
                 return new PoolsStageBehaviour(this);
+            case "swiss":
+                return new SwissEliminationStageBehaviour(this);
+            case "single":
+                return new SingleEliminationStageBehaviour(this);
+            case "double":
+                return new DoubleEliminationStageBehaviour(this);
         }
     }
 

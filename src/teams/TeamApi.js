@@ -1,5 +1,6 @@
 const ApiErrors = require("../net/server/UserApiErrors");
 const logger = require("../logging/Logger");
+const Helpers = require("../Helpers");
 
 class TeamApi {
 	constructor(router, teams, matches, users, tournaments) {
@@ -12,6 +13,7 @@ class TeamApi {
 		router.post("/team/join", (req, res) => this.join(req, res));
 		router.post("/team/invite/create", (req, res) => this.createInvite(req, res));
 		router.post("/team/match/finish", (req, res) => this.finishMatch(req, res));
+		router.post("/team/match/list", (req, res) => this.listMatches(req, res));
 	}
 
 	async create(req, res) {
@@ -249,6 +251,77 @@ class TeamApi {
 		await this.matches.decide(match.id, team.tournament);
 
 		await this.tournaments.matchFinished(team.tournament, match);
+
+		res.send({code: 200}, 200);
+	}
+
+	async listMatches(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		const pageNumber = data.pageNumber != undefined ? data.pageNumber : 0;
+		const pageSize = data.pageSize != undefined ? data.pageSize : 10;
+
+		const teams = await this.teams.getUserTeams(user);
+		let matches = [];
+		let tournaments = [];
+
+		for(const team of teams) {
+			const tournament = await this.tournaments.getModel({id: team.tournament});
+			const tournamentMatches = tournament.getAllMatches();
+
+			matches.push(...await this.matches.getArrayByIds(tournamentMatches));
+			tournaments.push(tournament);
+		}
+
+		if(data.future) {
+			matches = matches.filter(match => match.endDate >= new Date().getTime());
+			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate > b.startDate ? 1 : -1);
+		}
+		else {
+			matches = matches.filter(match => match.endDate < new Date().getTime());
+			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate < b.startDate ? 1 : -1);
+		}
+
+		matches = Helpers.pageArray(matches, pageNumber, pageSize);
+
+		const matchesData = [];
+
+		for(const match of matches) {
+			const teamsData = {};
+
+			for(const key of match.keys) {
+				let team;
+
+				if(match.teams != undefined && match.teams[key] != undefined) {
+					team = teams.find(team => team.id === match.teams[key]);
+				}
+				else {
+					team = teams.find(team => team.key === key);
+				}
+
+				if(team == undefined) continue;
+
+				teamsData[key] = {id: team.id, name: team.name};
+			}
+
+			matchesData.push({
+				id: match.id,
+				name: match.name,
+				startDate: match.startDate,
+				endDate: match.endDate,
+				color: tournaments.find(tournament => tournament.id === match.tournament).color,
+				scores: match.scores,
+				teams: teamsData,
+				keys: match.keys
+			});
+		}
+
+		res.send({code: 200, matches: matchesData}, 200);
 	}
 }
 

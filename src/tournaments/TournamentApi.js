@@ -7,6 +7,9 @@ class TournamentApi {
 		this.users = users;
 
 		router.post("/tournament/create", (req, res) => this.create(req, res));
+		router.post("/tournament/delete", (req, res) => this.delete(req, res));
+		router.post("/tournament/match/list", (req, res) => this.listMatches(req, res));
+		router.post("/tournament/round/list", (req, res) => this.listRoundMatches(req, res));
 	}
 
 	async create(req, res) {
