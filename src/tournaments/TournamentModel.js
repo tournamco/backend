@@ -36,6 +36,18 @@ class TournamentModel {
 		return this.stages[0].freeKeys.shift();
 	}
 
+	getAllMatches() {
+		const matches = [];
+
+		for(const stage of this.stages) {
+			for(const round of stage.rounds) {
+				matches.push(...round.matches);
+			}
+		}
+
+		return matches;
+	}
+
 	toDocument() {
 		return {
 			id: this.id,
