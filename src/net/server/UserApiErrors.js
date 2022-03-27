@@ -110,6 +110,18 @@ const errors = {
 		message: "That match is already finished for you.",
 		errno: index++
 	},
+	STAGE_NOT_FOUND: {
+		code: 404, 
+		reason: "Not found", 
+		message: "The given stage was not found.",
+		errno: index++
+	},
+	ROUND_NOT_FOUND: {
+		code: 404, 
+		reason: "Not found", 
+		message: "The given round was not found.",
+		errno: index++
+	},
 
 	/* Basic errors */
 	UNAUTHORIZED: {

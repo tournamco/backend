@@ -4,20 +4,21 @@
 ```
 ENDPOINT    		STATUS			DESCRIPTION
 /user
-  /create			IMPLEMENTED
-  /delete			NOT STARTED
-  /changePassword	NOT STARTED
-  /change			NOT STARTED
+  /create			IMPLEMENTED		Creates a new user
+  /delete			NOT STARTED		Deletes a user
+  /changePassword	NOT STARTED		Changes the password of a user
+  /change			NOT STARTED		Changes a value for a user
+  /me				IMPLEMENTED		Sends info about the logged in user
 /image
-  /upload			IMPLEMENTED
-  /download			IMPLEMENTED
+  /upload			IMPLEMENTED		Uploads an images and receives an id
+  /download			IMPLEMENTED		Downloads an image from an id
 /proof
-  /create			IMPLEMENTED
-  /delete			NOT STARTED
+  /create			IMPLEMENTED		Creates a new proof
+  /delete			NOT STARTED		Deletes a proof
   /image
-    /add			IMPLEMENTED
-	  /delete		NOT STARTED
-  /score			NOT STARTED
+    /add			IMPLEMENTED		Adds an image for a proof
+    /delete			NOT STARTED		Deletes an image from a proof
+  /score			IMPLEMENTED		Sets the score for the proof
 /team
   /create			IMPLEMENTED
   /abandon			NOT STARTED
@@ -29,10 +30,17 @@ ENDPOINT    		STATUS			DESCRIPTION
   /match
     /finish			IMPLEMENTED
 	/resign			NOT STARTED
+	/list			IMPLEMENTED
 /tournament
   /create			IMPLEMENTED
   /isPublic			NOT STARTED
-  /delete			NOT STARTED
+  /delete			IMPLEMENTED
+  /list				IMPLEMENTED
+  /match
+    /list			IMPLEMENTED
+  /round
+    /list			IMPLEMENTED
 /dispute
-  /resove			IN PROGRESS
+  /resove			IMPLEMENTED
+  /list				NOT STARTED
 ```
