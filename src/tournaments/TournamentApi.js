@@ -64,6 +64,168 @@ class TournamentApi {
 
 		res.send({code: 200, id: tournament.id}, 200);
 	}
+
+	async delete(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		if(data.tournament == undefined || data.tournament === "") {
+			return res.send(ApiErrors.MISSING("tournament"));
+		}
+
+		const tournament = await this.tournaments.getModel({id: data.tournament});
+
+		if(tournament.organizer != user.id) {
+			return res.send(ApiErrors.UNAUTHORIZED);
+		}
+
+		await this.tournaments.deleteById(tournament.id);
+
+		res.send({code: 200}, 200);
+	}
+
+	async listMatches(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		if(data.tournament == undefined || data.tournament === "") {
+			return res.send(ApiErrors.MISSING("tournament"));
+		}
+
+		const tournament = await this.tournaments.getModel({id: data.tournament});
+		const teams = await this.tournaments.getTeams(tournament.id);
+
+		let matches = tournament.getAllMatches();
+		matches = await this.matches.getArrayByIds(matches);
+
+		if(data.future) {
+			matches = matches.filter(match => match.endDate >= new Date().getTime());
+			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate > b.startDate ? 1 : -1);
+		}
+		else {
+			matches = matches.filter(match => match.endDate < new Date().getTime());
+			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate < b.startDate ? 1 : -1);
+		}
+
+		matches = Helpers.pageArray(matches, pageNumber, pageSize);
+
+		const matchesData = [];
+
+		for(const match of matches) {
+			const teamsData = {};
+
+			for(const key of match.keys) {
+				let team;
+
+				if(match.teams != undefined && match.teams[key] != undefined) {
+					team = teams.find(team => team.id === match.teams[key]);
+				}
+				else {
+					team = teams.find(team => team.key === key);
+				}
+
+				if(team == undefined) continue;
+
+				teamsData[key] = {id: team.id, name: team.name};
+			}
+
+			matchesData.push({
+				id: match.id,
+				name: match.name,
+				startDate: match.startDate,
+				endDate: match.endDate,
+				color: tournament.color,
+				scores: match.scores,
+				teams: teamsData,
+				keys: match.keys
+			});
+		}
+
+		res.send({code: 200, matches: matchesData}, 200);
+	}
+
+	async listRoundMatches(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		if(data.tournament == undefined || data.tournament === "") {
+			return res.send(ApiErrors.MISSING("tournament"));
+		}
+
+		if(data.stage == undefined) {
+			return res.send(ApiErrors.MISSING("stage"));
+		}
+
+		if(data.round == undefined) {
+			return res.send(ApiErrors.MISSING("round"));
+		}
+
+		const tournament = await this.tournaments.getModel({id: data.tournament});
+		const teams = await this.tournaments.getTeams(tournament.id);
+
+		let stage = tournament.stages[data.stage];
+
+		if(stage == undefined) {
+			return res.send(ApiErrors.STAGE_NOT_FOUND);
+		}
+
+		let round = stage.rounds[data.round];
+
+		if(round == undefined) {
+			return res.send(ApiErrors.ROUND_NOT_FOUND);
+		}
+
+		let matches = await this.matches.getArrayByIds(round.matches);
+
+		
+		matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate > b.startDate ? 1 : -1);
+
+		const matchesData = [];
+
+		for(const match of matches) {
+			const teamsData = {};
+
+			for(const key of match.keys) {
+				let team;
+
+				if(match.teams != undefined && match.teams[key] != undefined) {
+					team = teams.find(team => team.id === match.teams[key]);
+				}
+				else {
+					team = teams.find(team => team.key === key);
+				}
+
+				if(team == undefined) continue;
+
+				teamsData[key] = {id: team.id, name: team.name};
+			}
+
+			matchesData.push({
+				id: match.id,
+				name: match.name,
+				startDate: match.startDate,
+				endDate: match.endDate,
+				color: tournament.color,
+				scores: match.scores,
+				teams: teamsData,
+				keys: match.keys
+			});
+		}
+
+		res.send({code: 200, matches: matchesData}, 200);
+	}
 }
 
 module.exports = TournamentApi;
