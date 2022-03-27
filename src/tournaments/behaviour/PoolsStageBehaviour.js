@@ -23,7 +23,7 @@ class PoolsStageBehaviour extends AbstractStageBehaviour {
 		return this.stage.options.bestOf * this.stage.tournament.gameLength;
 	}
 
-	generateRounds(matchManager) {
+	async generateRounds(matchManager) {
 		let rounds = [];
         const numberOfPools = Math.ceil(this.stage.numberOfParticipants / this.stage.options.poolSize);
         const pools = [];
