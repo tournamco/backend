@@ -61,8 +61,6 @@ class UserApi {
 			return res.send(ApiErrors.NOT_WHEN_LOGGED_IN);
 		}
 
-		console.log(data.username, data.password);
-
 		if(!(await this.users.checkPasswordByUsername(data.username, data.password).catch(e=>{throw e}))) {
 			return res.send(ApiErrors.INCORRECT_EMAIL_PASSWORD);
 		}
@@ -93,6 +91,23 @@ class UserApi {
 		logger.debug(`The user with id ${user.id} logged out.`);
 
 		res.send({code: 200}, 200);
+	}
+
+	async me(req, res) {
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		res.send({
+			code: 200, 
+			id: user.id, 
+			username: user.username, 
+			icon: user.icon, 
+			gamerTag: user.gamerTag, 
+			email: user.email
+		}, 200);
 	}
 }
 
