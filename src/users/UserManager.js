@@ -24,7 +24,7 @@ class UserManager {
 	 */
 	async create({username, password, email, gamertag}) {
 		const id = nanoid(16);
-		const user = new UserModel({id, username, password, email, gamertag});
+		const user = new UserModel({id, username, password, email, gamertag, icon: undefined});
 
 		await this.collection.insertOne(user.toDocument());
 
