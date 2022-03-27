@@ -1,5 +1,5 @@
 class TeamModel {
-	constructor({id, name, leader, members, teamSize, tournament, isPublic, key}) {
+	constructor({id, name, leader, members, teamSize, tournament, isPublic, key, icon}) {
 		this.id = id;
 		this.name = name;
 		this.leader = leader;
@@ -8,6 +8,7 @@ class TeamModel {
 		this.tournament = tournament;
 		this.isPublic = isPublic;
 		this.key = key;
+		this.icon = icon;
 	}
 
 	addMember(id) {
@@ -22,6 +23,31 @@ class TeamModel {
 		this.leader = id;
 	}
 
+	async toPublicObject(userManager) {
+		const membersData = [];
+
+		for(const member of this.members) {
+			const user = await userManager.getModel({id: member});
+
+			if(user == undefined) return;
+
+			membersData.push(await user.toPublicObject());
+		}
+
+		const leader = await userManager.getModel({id: this.leader})
+
+		return {
+			id: this.id,
+			name: this.name,
+			leader: leader == undefined ? undefined : await leader.toPublicObject(),
+			teamSize: this.teamSize,
+			isPublic: this.isPublic,
+			icon: this.icon,
+			tournament: this.tournament,
+			members: membersData
+		};
+	}
+
 	toDocument() {
 		return {
 			id: this.id,
@@ -31,7 +57,8 @@ class TeamModel {
 			teamSize: this.teamSize,
 			tournament: this.tournament,
 			isPublic: this.isPublic,
-			key: this.key
+			key: this.key,
+			icon: this.icon
 		};
 	}
 }

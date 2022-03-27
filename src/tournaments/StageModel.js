@@ -88,6 +88,17 @@ class StageModel {
             winners: this.winners
         };
     }
+
+    toPublicObject() {
+        return {
+            type: this.type,
+            name: this.name,
+            numberOfParticipants: this.numberOfParticipants,
+            rounds: this.rounds.map(round => round.toPublicObject()),
+            winners: this.winners,
+            options: this.options
+        };
+    }
 }
 
 module.exports = StageModel;

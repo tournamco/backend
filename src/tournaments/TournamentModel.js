@@ -1,7 +1,7 @@
 const StageModel = require("./StageModel");
 
 class TournamentModel {
-	constructor({id, name, game, stages, teams, organizer, isPublic, color, teamSize, gameLength, currentStage}) {
+	constructor({id, name, game, stages, teams, organizer, isPublic, color, teamSize, gameLength, currentStage, banner, location, online}) {
 		this.id = id;
 		this.name = name;
 		this.game = game;
@@ -12,6 +12,9 @@ class TournamentModel {
         this.teamSize = teamSize;
         this.gameLength = gameLength;
         this.currentStage = currentStage;
+		this.banner = banner;
+		this.location = location;
+		this.online = online;
 
         this.stages = stages.map(stage => new StageModel(stage, this));
 	}
@@ -60,23 +63,29 @@ class TournamentModel {
 			color: this.color,
 			teamSize: this.teamSize,
 			gameLength: this.gameLength,
-			currentStage: this.currentStage
+			currentStage: this.currentStage,
+			banner: this.banner,
+			location: this.location,
+			online: this.online
 		};
 	}
 
-	toPublicJSON() {
+	async toPublicObject(userManager) {
 		return {
 			id: this.id,
 			name: this.name,
 			game: this.game,
 			teams: this.teams,
-			stages: this.stages.map(stage => stage.toPublicJSON()),
-			organizer: this.organizer,
+			stages: this.stages.map(stage => stage.toPublicObject()),
+			organizer: await userManager.getModel({id: this.organizer}).toPublicObject(),
 			isPublic: this.isPublic,
 			color: this.color,
 			teamSize: this.teamSize,
 			gameLength: this.gameLength,
-			currentStage: this.currentStage
+			currentStage: this.currentStage,
+			banner: this.banner,
+			location: this.location,
+			online: this.online
 		}
 	}
 }

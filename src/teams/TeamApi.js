@@ -309,16 +309,7 @@ class TeamApi {
 				teamsData[key] = {id: team.id, name: team.name};
 			}
 
-			matchesData.push({
-				id: match.id,
-				name: match.name,
-				startDate: match.startDate,
-				endDate: match.endDate,
-				color: tournaments.find(tournament => tournament.id === match.tournament).color,
-				scores: match.scores,
-				teams: teamsData,
-				keys: match.keys
-			});
+			matchesData.push(await match.toPublicObject(tournaments.find(tournament => tournament.id === match.tournament), teams, this.users));
 		}
 
 		res.send({code: 200, matches: matchesData}, 200);

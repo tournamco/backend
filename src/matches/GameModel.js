@@ -63,6 +63,13 @@ class GameModel {
 		return winners;
 	}
 
+	toPublicObject() {
+		return {
+			scores: this.scores,
+			proofs: this.proofs
+		}
+	}
+
 	toDocument() {
 		return {
 			scores: this.scores,

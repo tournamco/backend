@@ -15,10 +15,10 @@ class TournamentManager {
         this.teams = teams;
     }
 
-    async create({name, game, color, isPublic, organizer, stages, teamSize, gameLength}) {
+    async create({name, game, color, isPublic, organizer, stages, teamSize, gameLength, banner, online, location}) {
         const id = nanoid(16);
         const tournament = new TournamentModel({
-            id, name, game, color, teamSize, isPublic, organizer: organizer.id, gameLength, teams: [], stages: [], currentStage: 0
+            id, name, game, color, teamSize, isPublic, organizer: organizer.id, gameLength, teams: [], stages: [], currentStage: 0, banner, online, location
         });
 
         for(const stageData of stages) {
@@ -95,6 +95,7 @@ class TournamentManager {
         const stage = tournament.stages[tournament.currentStage];
         //const winners = oldStage.getWinners();
 
+        // TODO: Move winners to next stage
     }
 
     async tournamentFinished(tournament) {

@@ -65,6 +65,41 @@ class MatchModel {
 		return this.games[index];
 	}
 
+	async toPublicObject(match, tournament, teams, userManager) {
+		const teamsData = {};
+
+		for(const key of match.keys) {
+			let team;
+
+			if(match.teams != undefined && match.teams[key] != undefined) {
+				team = teams.find(team => team.id === match.teams[key]);
+			}
+			else {
+				team = teams.find(team => team.key === key);
+			}
+
+			if(team == undefined) continue;
+
+			teamsData[key] = await team.toPublicObject(userManager);
+		}
+
+		return {
+			id: match.id,
+			name: match.name,
+			startDate: match.startDate,
+			endDate: match.endDate,
+			tournament: {
+				id: tournament.id,
+				name: tournament.name,
+				color: tournament.color
+			},
+			scores: match.scores,
+			teams: teamsData,
+			keys: match.keys,
+			games: this.games.map(game => game.toPublicObject())
+		}
+	}
+
 	toDocument() {
 		return {
 			id: this.id,

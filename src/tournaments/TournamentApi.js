@@ -6,10 +6,27 @@ class TournamentApi {
 		this.tournaments = tournaments;
 		this.users = users;
 
+		router.get("/tournament/info", (req, res) => this.create(req, res));
 		router.post("/tournament/create", (req, res) => this.create(req, res));
 		router.post("/tournament/delete", (req, res) => this.delete(req, res));
 		router.post("/tournament/match/list", (req, res) => this.listMatches(req, res));
 		router.post("/tournament/round/list", (req, res) => this.listRoundMatches(req, res));
+	}
+
+	async info(req, res) {
+		const data = await req.data;
+
+		if(data.tournament == undefined || data.tournament === "") {
+			return res.send(ApiErrors.MISSING("tournament"));
+		}
+
+		const tournament = this.tournaments.get({id: data.tournament});
+
+		if(tournament == null) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		res.send({code: 200, tournament: tournament.toPublicObject()}, 200);
 	}
 
 	async create(req, res) {
@@ -48,6 +65,10 @@ class TournamentApi {
 			return res.send(ApiErrors.MISSING("game length"));
 		}
 
+		if(!data.online && data.location == undefined) {
+			return res.send(ApiErrors.MISSING("location"));
+		}
+
 		const tournament = await this.tournaments.create({
 			name: data.name,
 			color: data.color,
@@ -56,7 +77,10 @@ class TournamentApi {
 			game: data.game,
 			isPublic: data.isPublic,
 			gameLength: data.gameLength,
-			stages: data.stages
+			stages: data.stages,
+			banner: data.banner,
+			online: data.online,
+			location: data.location
 		});
 
 		if(tournament === undefined) {
@@ -81,6 +105,10 @@ class TournamentApi {
 		}
 
 		const tournament = await this.tournaments.getModel({id: data.tournament});
+
+		if(tournament == null) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
 
 		if(tournament.organizer != user.id) {
 			return res.send(ApiErrors.UNAUTHORIZED);

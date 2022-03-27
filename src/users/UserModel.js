@@ -8,6 +8,16 @@ class UserModel {
 		this.icon = icon;
 	}
 
+	toPublicObject() {
+		return {
+			id: this.id,
+			username: this.username,
+			email: this.email,
+			gamertag: this.gamertag,
+			icon: this.icon
+		}
+	}
+
 	toDocument() {
 		return {
 			id: this.id,

@@ -17,6 +17,13 @@ class RoundModel {
             matches: this.matches
         }
     }
+
+    toPublicObject() {
+        return {
+            name: this.name,
+            matches: this.matches
+        }
+    }
 }
 
 module.exports = RoundModel;
