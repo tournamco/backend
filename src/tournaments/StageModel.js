@@ -1,4 +1,3 @@
-const { nanoid } = require("nanoid");
 const moment = require("moment");
 const RoundModel = require("./RoundModel");
 const PoolsStageBehaviour = require("./behaviour/PoolsStageBehaviour");
@@ -7,8 +6,7 @@ const SingleEliminationStageBehaviour = require("./behaviour/SingleEliminationSt
 const DoubleEliminationStageBehaviour = require("./behaviour/DoubleEliminationStageBehaviour");
 
 class StageModel {
-    constructor({id, type, name, numberOfParticipants, rounds, minimalDate, maximalDate, minimalTime, maximalTime, options, freeKeys, winners}, parent) {
-        this.id = id;
+    constructor({type, name, numberOfParticipants, rounds, minimalDate, maximalDate, minimalTime, maximalTime, options, freeKeys, winners}, parent) {
         this.type = type;
         this.name = name;
         this.numberOfParticipants = numberOfParticipants;
@@ -74,7 +72,6 @@ class StageModel {
 
     toDocument() {
         return {
-            id: this.id,
             type: this.type,
             name: this.name,
             numberOfParticipants: this.numberOfParticipants,

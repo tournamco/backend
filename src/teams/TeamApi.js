@@ -14,6 +14,7 @@ class TeamApi {
 		router.post("/team/invite/create", (req, res) => this.createInvite(req, res));
 		router.post("/team/match/finish", (req, res) => this.finishMatch(req, res));
 		router.post("/team/match/list", (req, res) => this.listMatches(req, res));
+		router.get("/team/tournament/list", (req, res) => this.list(req, res));
 	}
 
 	async create(req, res) {
@@ -313,6 +314,32 @@ class TeamApi {
 		}
 
 		res.send({code: 200, matches: matchesData}, 200);
+	}
+	
+	async list(req, res) {
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		const pageNumber = data.pageNumber != undefined ? data.pageNumber : 0;
+		const pageSize = data.pageSize != undefined ? data.pageSize : 10;
+
+		const teams = await this.teams.getUserTeams(user);
+		let tournaments = [];
+
+		for(const team of teams) {
+			const tournament = await this.tournaments.getModel({id: team.tournament});
+
+			if(tournament.stages[tournament.stages.length - 1].winners != undefined) continue;
+
+			tournaments.push(tournament.toPublicObject(this.users));
+		}
+
+		tournaments = Helpers.pageArray(tournaments, pageNumber, pageSize);
+
+		res.send({code: 200, tournaments}, 200);
 	}
 }
 

@@ -23,7 +23,6 @@ class TournamentManager {
 
         for(const stageData of stages) {
             const stage = new StageModel({
-                id: nanoid(16),
                 type: stageData.type,
                 name: stageData.name,
                 numberOfParticipants: stageData.numberOfParticipants, 
