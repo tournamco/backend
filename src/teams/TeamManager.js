@@ -52,6 +52,30 @@ class TeamManager {
 		await this.collection.replaceOne({id}, team.toDocument());
 	}
 
+	async changeName(id, name) {
+		const team = this.getModel({id});
+
+		team.name = name;
+
+		await this.collection.replaceOne({id}, team.toDocument());
+	}
+
+	async changeIsPublic(id, isPublic) {
+		const team = await this.getModel({id});
+
+		team.isPublic = isPublic;
+
+		await this.collection.replaceOne({id}, team.toDocument());
+	}
+
+	async changeIcon(id, icon) {
+		const team = await this.getModel({id});
+
+		team.icon = icon;
+
+		await this.collection.replaceOne({id}, team.toDocument());
+	}
+
 	async checkIfInTournament(id, user) {
 		const tournament = await this.tournaments.getModel({id});
 

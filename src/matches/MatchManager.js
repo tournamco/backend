@@ -56,6 +56,31 @@ class MatchManager {
 		return true;
 	}
 
+	async setResignLoser(id, loser, teams) {
+		const match = await this.getModel({id});
+
+		if(match == undefined) return;
+		
+		for(const key of match.keys) {
+			match.finished[key] = true;
+			match.teams[key] = (await teams.get({key})).id;
+		}
+
+		for(const game of match.games) {
+			for(const key of match.keys) {
+				if(key == loser) {
+					game.scores[key] = 0;
+				}
+				else {
+					game.scores[key] = 1;
+				}
+			}
+		}
+
+		await this.collection.replaceOne({id}, match);
+
+	}
+
 	async setFinished(id, key, team) {
 		const match = await this.get({id});
 

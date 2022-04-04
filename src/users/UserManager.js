@@ -67,6 +67,56 @@ class UserManager {
 		return documents.length > 0;
 	}
 
+	async changePassword(userId, password) {
+		const user = await this.collection.findOne({id: userId});
+
+		if(user == undefined) return;
+
+		user.password = this.hashPassword(password);
+
+		await this.collection.updateOne({id: userId}, user);
+	}
+
+	async changeUsername(userId, username) {
+		const user = await this.collection.findOne({id: userId});
+
+		if(user == undefined) return;
+
+		user.username = username;
+
+		await this.collection.updateOne({id: userId}, user);
+	}
+
+	async changeEmail(userId, email) {
+		const user = await this.collection.findOne({id: userId});
+
+		if(user == undefined) return;
+
+		user.email = email;
+
+		await this.collection.updateOne({id: userId}, user);
+	}
+
+	async changeGamertag(userId, gamertag) {
+		const user = await this.collection.findOne({id: userId});
+
+		if(user == undefined) return;
+
+		user.gamertag = gamertag;
+
+		await this.collection.updateOne({id: userId}, user);
+	}
+
+	async changeIcon(userId, icon) {
+		const user = await this.collection.findOne({id: userId});
+
+		if(user == undefined) return;
+
+		user.icon = icon;
+
+		await this.collection.updateOne({id: userId}, user);
+	}
+
 	async getIdFromUsername(username) {
 		const document = await this.collection.findOne({username});
 

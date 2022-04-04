@@ -16,6 +16,8 @@ class UserApi {
 		router.post("/user/create", (req, res) => this.create(req, res));
 		router.post("/user/login", (req, res) => this.login(req, res));
 		router.post("/user/logout", (req, res) => this.logout(req, res));
+		router.post("/user/change", (req, res) => this.change(req, res));
+		router.post("/user/changePassword", (req, res) => this.changePassword(req, res));
 	}
 
 	/**
@@ -102,12 +104,83 @@ class UserApi {
 
 		res.send({
 			code: 200, 
-			id: user.id, 
-			username: user.username, 
-			icon: user.icon, 
-			gamerTag: user.gamerTag, 
-			email: user.email
+			user: user.toPublicObject()
 		}, 200);
+	}
+
+	async change(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		if(data.field == undefined || data.field == "") {
+			return res.send(ApiErrors.MISSING("field"));
+		}
+
+		if(data.value == undefined || data.value == "") {
+			return res.send(ApiErrors.MISSING("value"));
+		}
+
+		switch(data.field) {
+			case "username":
+				if(await this.users.usernameExists(data.value).catch(e=>{throw e})) {
+					return res.send(ApiErrors.ALREADY_USED_USERNAME);
+				}
+
+				await this.users.changeUsername(user.id, data.value).catch(e=>{throw e});
+				logger.debug(`The user with id ${user.id} changed their username to ${data.value}.`);
+				break;
+			case "email":
+				if(await this.users.emailExists(data.value).catch(e=>{throw e})) {
+					return res.send(ApiErrors.ALREADY_USED_EMAIL);
+				}
+
+				await this.users.changeEmail(user.id, data.value).catch(e=>{throw e});
+				logger.debug(`The user with id ${user.id} changed their email to ${data.value}.`);
+				break;
+			case "gamertag":
+				await this.users.changeGamertag(user.id, data.value).catch(e=>{throw e});
+				logger.debug(`The user with id ${user.id} changed their gamertag to ${data.value}.`);
+				break;
+			case "icon":
+				await this.users.changeIcon(user.id, data.value).catch(e=>{throw e});
+				logger.debug(`The user with id ${user.id} changed their icon to ${data.value}.`);
+				break;
+			default:
+				return res.send(ApiErrors.INVALID_FIELD);
+		}
+
+		res.send({code: 200}, 200);
+	}
+
+	async changePassword(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		if(data.oldPassword == undefined || data.oldPassword == "") {
+			return res.send(ApiErrors.MISSING("oldPassword"));
+		}
+
+		if(data.newPassword == undefined || data.newPassword == "") {
+			return res.send(ApiErrors.MISSING("newPassword"));
+		}
+
+		if(!(await this.users.checkPasswordByUsername(user.username, data.oldPassword).catch(e=>{throw e}))) {
+			return res.send(ApiErrors.INCORRECT_EMAIL_PASSWORD);
+		}
+
+		await this.users.changePassword(user.id, this.users.hashPassword(data.newPassword)).catch(e=>{throw e});
+
+		logger.debug(`The user with id ${user.id} changed their password.`);
+
+		res.send({code: 200}, 200);
 	}
 }
 

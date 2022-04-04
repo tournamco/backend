@@ -120,7 +120,7 @@ class ProofApi {
 		res.send({code: 200}, 200);
 	}
 
-	removeImage() {
+	async removeImage() {
 		const data = await req.data;
 		const user = await this.users.getFromSession(req).catch(e=>{throw e});
 

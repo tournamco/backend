@@ -144,6 +144,12 @@ const errors = {
 		message: "There occured an unexpected error on the server.",
 		errno: index++
 	},
+	INVALID_FIELD: {
+		code: 400,
+		reason: "Bad Request",
+		message: "The given field is invalid.",
+		errno: index++
+	},
 
 	findByErrno: errno => {
 		for(const error of errors) {

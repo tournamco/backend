@@ -11,6 +11,7 @@ class TournamentApi {
 		router.post("/tournament/delete", (req, res) => this.delete(req, res));
 		router.get("/tournament/match/list", (req, res) => this.listMatches(req, res));
 		router.get("/tournament/round/list", (req, res) => this.listRoundMatches(req, res));
+		router.get("/tournament/discovery", (req, res) => this.discovery(req, res));
 	}
 
 	async info(req, res) {
@@ -238,6 +239,47 @@ class TournamentApi {
 		}
 
 		res.send({code: 200, matches: matchesData}, 200);
+	}
+
+	async discovery(req, res) {
+		const data = await req.data;
+
+		if(data.local) {
+			this.discoveryLocal(req, res);
+		}
+		else {
+			this.discoveryOnline(req, res);
+		}
+	}
+
+	async discoveryLocal(req, res) {
+		if(!req.data.hasOwnProperty("location")) {
+			return res.send(ApiErrors.MISSING("location"));
+		}
+
+		if(!req.data.hasOwnProperty("distance")) {
+			return res.send(ApiErrors.MISSING("distance"));
+		}
+		
+		const tournaments = this.tournaments.getClosest(req.data.location, req.data.distance);
+
+		const pageNumber = data.pageNumber != undefined ? data.pageNumber : 0;
+		const pageSize = data.pageSize != undefined ? data.pageSize : 10;
+
+		tournaments = Helpers.pageArray(tournaments, pageNumber, pageSize);
+
+		res.send({code: 200, tournaments: tournaments.map(tournament => tournament.toPublicObject(this.users))}, 200);
+	}
+
+	async discoveryOnline(req, res) {
+		const tournaments = await this.tournaments.getOnline();
+
+		const pageNumber = data.pageNumber != undefined ? data.pageNumber : 0;
+		const pageSize = data.pageSize != undefined ? data.pageSize : 10;
+
+		tournaments = Helpers.pageArray(tournaments, pageNumber, pageSize);
+
+		res.send({code: 200, tournaments: tournaments.map(tournament => tournament.toPublicObject(this.users))}, 200);
 	}
 }
 

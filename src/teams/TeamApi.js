@@ -14,10 +14,12 @@ class TeamApi {
 		router.post("/team/invite/create", (req, res) => this.createInvite(req, res));
 		router.post("/team/match/finish", (req, res) => this.finishMatch(req, res));
 		router.post("/team/match/list", (req, res) => this.listMatches(req, res));
+		router.post("/team/match/resign", (req, res) => this.resign(req, res));
 		router.get("/team/tournament/list", (req, res) => this.listTournaments(req, res));
 		router.get("/team/info", (req, res) => this.info(req, res));
 		router.post("/team/leave", (req, res) => this.leave(req, res));
 		router.get("/team/list", (req, res) => this.list(req, res));
+		router.post("/team/change", (req, res) => this.change(req, res));
 	}
 
 	async create(req, res) {
@@ -421,6 +423,94 @@ class TeamApi {
 		const teams = await this.teams.getArray({tournament: tournament.id});
 
 		res.send({code: 200, teams: teams.map(team => team.toPublicObject(this.users))}, 200);
+	}
+
+	async change(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		if(data.id == undefined || data.id == "") {
+			return res.send(ApiErrors.MISSING("id"));
+		}
+
+		if(data.field == undefined || data.field == "") {
+			return res.send(ApiErrors.MISSING("field"));
+		}
+
+		if(data.value == undefined || data.value == "") {
+			return res.send(ApiErrors.MISSING("value"));
+		}
+
+		const team = await this.teams.getModel({id: data.id});
+
+		if(team == undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		if(team.leader != user.id) {
+			return res.send(ApiErrors.NOT_AUTHORIZED);
+		}
+
+		switch(data.field) {
+			case "name":
+				await this.teams.changeName(team.id, data.value);
+				break;
+			case "isPublic":
+				await this.teams.changeIsPublic(team.id, data.value);
+				break;
+			case "icon":
+				await this.teams.changeIcon(team.id, data.value);
+				break;
+			default:
+				return res.send(ApiErrors.INVALID_FIELD);
+		}
+
+		res.send({code: 200}, 200);
+	}
+
+	async resign(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		if(data.team == undefined || data.team == "") {
+			return res.send(ApiErrors.MISSING("team"));
+		}
+		
+		if(data.match == undefined || data.match == "") {
+			return res.send(ApiErrors.MISSING("match"));
+		}
+
+		const team = await this.teams.getModel({id: data.team});
+
+		if(team == undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		if(team.leader != user.id) {
+			return res.send(ApiErrors.NOT_AUTHORIZED);
+		}
+
+		const match = await this.matches.getModel({id: data.match});
+
+		if(match == undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		if(Object.values(match.teams).indexOf(team.id) > -1 || match.keys.indexOf(team.key) == -1) {
+			return res.send(ApiErrors.NOT_AUTHORIZED);
+		}
+
+		await this.matches.setResignLoser(match.id, team.key, this.teams);
+
+		res.send({code: 200}, 200);
 	}
 }
 

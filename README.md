@@ -6,8 +6,8 @@ ENDPOINT    		STATUS			DESCRIPTION
 /user
   /create			IMPLEMENTED		Creates a new user
   /delete			NOT STARTED		Deletes a user
-  /changePassword	NOT STARTED		Changes the password of a user
-  /change			NOT STARTED		Changes a value for a user
+  /changePassword	IMPLEMENTED		Changes the password of a user
+  /change			IMPLEMENTED		Changes a value for a user
   /me				IMPLEMENTED		Sends info about the logged in user
 /image
   /upload			IMPLEMENTED		Uploads an images and receives an id
@@ -21,14 +21,15 @@ ENDPOINT    		STATUS			DESCRIPTION
 /team
   /create			IMPLEMENTED
   /abandon			NOT STARTED
-  /change			NOT STARTED
+  /change			IMPLEMENTED
   /join				IMPLEMENTED
   /leave			IMPLEMENTED
+  /list				IMPLEMENTED
   /invite
     /create			IMPLEMENTED
   /match
     /finish			IMPLEMENTED
-	/resign			NOT STARTED
+	/resign			IMPLEMENTED
 	/list			IMPLEMENTED
 /tournament
   /create			IMPLEMENTED

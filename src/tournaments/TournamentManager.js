@@ -18,7 +18,7 @@ class TournamentManager {
     async create({name, game, color, isPublic, organizer, stages, teamSize, gameLength, banner, online, location}) {
         const id = nanoid(16);
         const tournament = new TournamentModel({
-            id, name, game, color, teamSize, isPublic, organizer: organizer.id, gameLength, teams: [], stages: [], currentStage: 0, banner, online, location
+            id, name, game, color, teamSize, isPublic, organizer: organizer.id, gameLength, teams: [], stages: [], currentStage: 0, banner, online, location: {type: "Point", coordinates: location}
         });
 
         for(const stageData of stages) {
@@ -92,13 +92,16 @@ class TournamentManager {
         }
 
         const stage = tournament.stages[tournament.currentStage];
-        //const winners = oldStage.getWinners();
+        const winners = oldStage.getWinners();
 
-        // TODO: Move winners to next stage
+        for(const winner of winners) {
+            const key = stage.getFreeKey();
+            await this.teams.setKey(winner, key);
+        }
     }
 
     async tournamentFinished(tournament) {
-
+        // What to do?
     }
 
     async addTeam(id, team) {
@@ -127,6 +130,18 @@ class TournamentManager {
 
     get(data) {
         return this.collection.findOne(data);
+    }
+
+    async getClosest(location, radius) {
+        const tournamentsData = await (await this.collection.findMany({location: {$near: {type: "Point", coordinates: location}, $maxDistance: radius}})).toArray();
+
+        return tournamentsData.map(tournament => new TournamentModel(tournament));
+    }
+
+    async getOnline() {
+        const tournamentsData = await (await this.collection.find({online: true})).toArray();
+
+        return tournamentsData.map(tournament => new TournamentModel(tournament));
     }
 
     async getModel(data) {
