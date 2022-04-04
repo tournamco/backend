@@ -14,7 +14,7 @@ class TeamApi {
 		router.post("/team/invite/create", (req, res) => this.createInvite(req, res));
 		router.post("/team/match/finish", (req, res) => this.finishMatch(req, res));
 		router.post("/team/match/list", (req, res) => this.listMatches(req, res));
-		router.get("/team/tournament/list", (req, res) => this.list(req, res));
+		router.get("/team/tournament/list", (req, res) => this.listTournaments(req, res));
 	}
 
 	async create(req, res) {
@@ -316,7 +316,7 @@ class TeamApi {
 		res.send({code: 200, matches: matchesData}, 200);
 	}
 	
-	async list(req, res) {
+	async listTournaments(req, res) {
 		const user = await this.users.getFromSession(req).catch(e=>{throw e});
 
 		if(user === undefined) {
@@ -340,6 +340,39 @@ class TeamApi {
 		tournaments = Helpers.pageArray(tournaments, pageNumber, pageSize);
 
 		res.send({code: 200, tournaments}, 200);
+	}
+
+	async info(req, res) {
+		const data = await req.data;
+
+		if(data.id == undefined || data.id == "") {
+			return res.send(ApiErrors.MISSING("id"));
+		}
+
+		if(Array.isArray(data.id)) {
+			const teams = [];
+
+			for(const id of data.id) {
+				const team = await this.teams.getModel({id});
+
+				if(team == undefined) {
+					return res.send(ApiErrors.NOT_FOUND);
+				}
+
+				teams.push(team);
+			}
+
+			res.send({code: 200, teams: teams.map(team => team.toPublicObject(this.users))}, 200);
+		}
+		else {
+			const team = this.teams.getModel({id: data.id});
+
+			if(team == undefined) {
+				return res.send(ApiErrors.NOT_FOUND);
+			}
+
+			res.send({code: 200, team: team.toPublicObject(this.users)}, 200);
+		}
 	}
 }
 
