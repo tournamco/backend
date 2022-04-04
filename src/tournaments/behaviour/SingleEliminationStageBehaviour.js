@@ -1,4 +1,5 @@
-const nanoid = require("nanoid");
+const {nanoid} = require("nanoid");
+const RoundModel = require("../RoundModel");
 const AbstractStageBehaviour = require("./AbstractStageBehaviour");
 
 class SingleEliminationStageBehaviour extends AbstractStageBehaviour {
@@ -51,7 +52,7 @@ class SingleEliminationStageBehaviour extends AbstractStageBehaviour {
 				const winnerKey = nanoid(8);
 				newRemainder.push(winnerKey);
 
-				const match = matchManager.create({name: `Match ${j+1}`, keys: [remainder[j], remainder[j+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, undefined]}, (i>=(this.stage.options.numberOfRound-this.stage.options.numberOfFinals)) ? this.stage.options.finalsBestOf : this.stage.options.bestOf);
+				const match = matchManager.create({name: `Match ${j/2+1}`, keys: [remainder[j], remainder[j+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, undefined]}, this.stage.options.bestOf);
 				round.addMatch(match);
 			}
 
@@ -65,8 +66,6 @@ class SingleEliminationStageBehaviour extends AbstractStageBehaviour {
 	};
 
 	isValid() {
-        if(this.stage.options.finalsBestOf <= 0) return false;
-        if(this.stage.options.numberOfFinals <= 0) return false;
         if(this.stage.options.numberOfRounds <= 0) return false;
         if(this.stage.options.bestOf <= 0) return false;
 

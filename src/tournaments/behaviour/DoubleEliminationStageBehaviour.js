@@ -1,3 +1,5 @@
+const {nanoid} = require("nanoid");
+const RoundModel = require("../RoundModel");
 const AbstractStageBehaviour = require("./AbstractStageBehaviour");
 
 class DoubleEliminationStageBehaviour extends AbstractStageBehaviour {
@@ -5,8 +7,22 @@ class DoubleEliminationStageBehaviour extends AbstractStageBehaviour {
 		super(stage);
 	}
 
-	getWinnersFromMatches(matchManager, teamManager) {};
+	getWinnersFromMatches(matchManager, teamManager) {
+		const lastRound = this.stage.rounds[this.stage.rounds.length-1];
+		const winners = [];
+
+		for(const matchId of lastRound.matches) {
+			const match = matchManager.getModel({id: matchId});
+			const winnerKey = match.getWinner();
+			const winner = match.teams[winnerKey];
+			winners.push(winner);
+		}
+
+		return winners;
+	};
+
 	get matchLength() {};
+
 	generateRounds(matchManager) {
 		let rounds = [];
 		let upperRemainder = [];
@@ -44,7 +60,7 @@ class DoubleEliminationStageBehaviour extends AbstractStageBehaviour {
 				const winnerKey = nanoid(8);
 				newLowerRemainder.push(winnerKey);
 
-				const match = matchManager.create({name: `Match L${j+1}`, keys: [lowerRemainder[j], lowerRemainder[j+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, undefined]}, (i>=(this.stage.options.numberOfRound-this.stage.options.numberOfFinals)) ? this.stage.options.finalsBestOf : this.stage.options.bestOf);
+				const match = matchManager.create({name: `Match L${j+1}`, keys: [lowerRemainder[j], lowerRemainder[j+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, undefined]}, this.stage.options.bestOf);
 				round.addMatch(match);
 			}
 
@@ -56,13 +72,18 @@ class DoubleEliminationStageBehaviour extends AbstractStageBehaviour {
 		}
 
 		const round = new RoundModel({id: nanoid(16), name: `Round ${i+1}`, matches: []}, this.stage);
-		const match = matchManager.create({name: `Match F1`, keys: [upperRemainder[0], lowerRemainder[0]], tournament: this.stage.tournament.id}, (i>=(this.stage.options.numberOfRound-this.stage.options.numberOfFinals)) ? this.stage.options.finalsBestOf : this.stage.options.bestOf);
+		const match = matchManager.create({name: `Match F1`, keys: [upperRemainder[0], lowerRemainder[0]], tournament: this.stage.tournament.id}, this.stage.options.bestOf);
 		round.addMatch(match);
 		rounds.push(round);
 
 		return rounds;
 	};
-	isValid() {};
+
+	isValid() {
+        if(this.stage.options.bestOf <= 0) return false;
+
+		return true;
+	};
 }
 
 module.exports = DoubleEliminationStageBehaviour;

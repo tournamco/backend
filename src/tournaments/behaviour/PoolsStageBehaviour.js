@@ -1,4 +1,4 @@
-const nanoid = require("nanoid");
+const {nanoid} = require("nanoid");
 const RoundModel = require("../RoundModel");
 const AbstractStageBehaviour = require("./AbstractStageBehaviour");
 

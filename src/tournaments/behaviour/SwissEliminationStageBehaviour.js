@@ -1,3 +1,5 @@
+const {nanoid} = require("nanoid");
+const RoundModel = require("../RoundModel");
 const AbstractStageBehaviour = require("./AbstractStageBehaviour");
 
 class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
@@ -55,7 +57,7 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 				for(let l = 0; l < winsKeys.length; l+=2) {
 					const winnerKey = nanoid(8);
 					const loserKey = nanoid(8);
-					const match = matchManager.create({name: `Match ${j+1}`, keys: [wins[j][i], wins[j][i+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, (k>=(numberOfRounds-this.stage.options.numberOfFinals)) ? this.stage.options.finalsBestOf : this.stage.options.bestOf);
+					const match = matchManager.create({name: `Match ${j+1}`, keys: [wins[j][i], wins[j][i+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, this.stage.options.bestOf);
 					round.addMatch(match);
 					newWins[j+1].push(winnerKey);
 					newWins[j].push(loserKey);
@@ -81,7 +83,7 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 				for(let l = 0; l < winsKeys.length; l+=2) {
 					const winnerKey = nanoid(8);
 					const loserKey = nanoid(8);
-					const match = matchManager.create({name: `Match ${j+1}`, keys: [wins[j][i], wins[j][i+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, (k>=(numberOfRounds-this.stage.options.numberOfFinals)) ? this.stage.options.finalsBestOf : this.stage.options.bestOf);
+					const match = matchManager.create({name: `Match ${j+1}`, keys: [wins[j][i], wins[j][i+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, this.stage.options.bestOf);
 					round.addMatch(match);
 					newWins[j+1].push(winnerKey);
 					newWins[j].push(loserKey);
@@ -96,8 +98,6 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 		return rounds;
 	};
 	isValid() {
-		if(this.stage.options.finalsBestOf <= 0) return false;
-        if(this.stage.options.numberOfFinals <= 0) return false;
         if(this.stage.options.bestOf <= 0) return false;
 	};
 }
