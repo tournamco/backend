@@ -22,6 +22,10 @@ class DisputeManager {
 		return this.collection.findOne(data);
 	}
 
+	getAll(data) {
+		return this.collection.findMany(data);
+	}
+
 	remove(data) {
 		return this.collection.deleteOne(data);
 	}

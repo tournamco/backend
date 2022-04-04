@@ -15,6 +15,9 @@ class TeamApi {
 		router.post("/team/match/finish", (req, res) => this.finishMatch(req, res));
 		router.post("/team/match/list", (req, res) => this.listMatches(req, res));
 		router.get("/team/tournament/list", (req, res) => this.listTournaments(req, res));
+		router.get("/team/info", (req, res) => this.info(req, res));
+		router.post("/team/leave", (req, res) => this.leave(req, res));
+		router.get("/team/list", (req, res) => this.list(req, res));
 	}
 
 	async create(req, res) {
@@ -373,6 +376,51 @@ class TeamApi {
 
 			res.send({code: 200, team: team.toPublicObject(this.users)}, 200);
 		}
+	}
+
+	async leave(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		if(data.id == undefined || data.id == "") {
+			return res.send(ApiErrors.MISSING("id"));
+		}
+
+		const team = await this.teams.getModel({id: data.id});
+
+		if(team == undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		if(team.members.indexOf(user.id) == -1) {
+			return res.send(ApiErrors.NOT_AUTHORIZED);
+		}
+
+		await this.teams.removeMember(team.id, user.id);
+
+		res.send({code: 200}, 200);
+	}
+
+	async list(req, res) {
+		const data = await req.data;
+
+		if(data.tournament == undefined || data.tournament == "") {
+			return res.send(ApiErrors.MISSING("tournament"));
+		}
+
+		const tournament = await this.tournaments.getModel({id: data.tournament});
+
+		if(tournament == undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		const teams = await this.teams.getArray({tournament: tournament.id});
+
+		res.send({code: 200, teams: teams.map(team => team.toPublicObject(this.users))}, 200);
 	}
 }
 

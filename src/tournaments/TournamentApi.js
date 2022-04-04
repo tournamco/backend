@@ -9,8 +9,8 @@ class TournamentApi {
 		router.get("/tournament/info", (req, res) => this.create(req, res));
 		router.post("/tournament/create", (req, res) => this.create(req, res));
 		router.post("/tournament/delete", (req, res) => this.delete(req, res));
-		router.post("/tournament/match/list", (req, res) => this.listMatches(req, res));
-		router.post("/tournament/round/list", (req, res) => this.listRoundMatches(req, res));
+		router.get("/tournament/match/list", (req, res) => this.listMatches(req, res));
+		router.get("/tournament/round/list", (req, res) => this.listRoundMatches(req, res));
 	}
 
 	async info(req, res) {
@@ -168,16 +168,7 @@ class TournamentApi {
 				teamsData[key] = {id: team.id, name: team.name};
 			}
 
-			matchesData.push({
-				id: match.id,
-				name: match.name,
-				startDate: match.startDate,
-				endDate: match.endDate,
-				color: tournament.color,
-				scores: match.scores,
-				teams: teamsData,
-				keys: match.keys
-			});
+			matchesData.push(await match.toPublicObject(tournaments.find(tournament => tournament.id === match.tournament), teams, this.users));
 		}
 
 		res.send({code: 200, matches: matchesData}, 200);
@@ -243,16 +234,7 @@ class TournamentApi {
 				teamsData[key] = {id: team.id, name: team.name};
 			}
 
-			matchesData.push({
-				id: match.id,
-				name: match.name,
-				startDate: match.startDate,
-				endDate: match.endDate,
-				color: tournament.color,
-				scores: match.scores,
-				teams: teamsData,
-				keys: match.keys
-			});
+			matchesData.push(await match.toPublicObject(tournaments.find(tournament => tournament.id === match.tournament), teams, this.users));
 		}
 
 		res.send({code: 200, matches: matchesData}, 200);

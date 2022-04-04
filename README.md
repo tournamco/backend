@@ -14,17 +14,16 @@ ENDPOINT    		STATUS			DESCRIPTION
   /download			IMPLEMENTED		Downloads an image from an id
 /proof
   /create			IMPLEMENTED		Creates a new proof
-  /delete			NOT STARTED		Deletes a proof
   /image
     /add			IMPLEMENTED		Adds an image for a proof
-    /delete			NOT STARTED		Deletes an image from a proof
+    /delete			IMPLEMENTED		Deletes an image from a proof
   /score			IMPLEMENTED		Sets the score for the proof
 /team
   /create			IMPLEMENTED
   /abandon			NOT STARTED
   /change			NOT STARTED
   /join				IMPLEMENTED
-  /leave			NOT STARTED
+  /leave			IMPLEMENTED
   /invite
     /create			IMPLEMENTED
   /match
@@ -42,5 +41,5 @@ ENDPOINT    		STATUS			DESCRIPTION
     /list			IMPLEMENTED
 /dispute
   /resove			IMPLEMENTED
-  /list				NOT STARTED
+  /list				IMPLEMENTED
 ```

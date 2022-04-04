@@ -36,6 +36,16 @@ class ProofManager {
 		await this.collection.replaceOne({id}, proof);
 	}
 
+	async removeImage(id, image) {
+		const proof = await this.get({id});
+
+		if(proof === undefined) return;
+
+		proof.images = proof.images.filter(i => i !== image);
+
+		await this.collection.replaceOne({id}, proof);
+	}
+
 	async setScores(id, scores) {
 		const proof = await this.getModel({id});
 

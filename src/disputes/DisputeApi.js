@@ -9,6 +9,7 @@ class DisputeApi {
 		this.disputes = disputes;
 
 		router.post("/dispute/resolve", (req, res) => this.resolve(req, res));
+		router.get("/dispute/list", (req, res) => this.list(req, res));
 	}
 
 	async resolve(req, res) {
@@ -58,6 +59,33 @@ class DisputeApi {
 		await this.tournaments.matchFinished(tournament.id, match);
 
 		res.send({code: 200}, 200);
+	}
+
+	async list(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+		
+		if(data.tournament == undefined || data.tournament === "") {
+			return res.send(ApiErrors.MISSING("tournament"));
+		}
+
+		const tournament = await this.tournaments.getModel({id: data.tournament});
+
+		if(tournament === undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		if(user.id !== tournament.organizer) {
+			return res.send(ApiErrors.UNAUTHORIZED);
+		}
+
+		const disputes = await this.disputes.getAll({tournament: tournament.id});
+
+		res.send({code: 200, disputes: disputes});
 	}
 }
 

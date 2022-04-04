@@ -9,6 +9,7 @@ class ProofApi {
 		
 		router.post("/proof/create", (req, res) => this.create(req, res));
 		router.post("/proof/image/add", (req, res) => this.addImage(req, res));
+		router.post("/proof/image/remove", (req, res) => this.removeImage(req, res));
 		router.post("/proof/scores/set", (req, res) => this.setScores(req, res))
 	}
 
@@ -73,10 +74,6 @@ class ProofApi {
 		res.send({code: 200, id: proof.id}, 200);
 	}
 
-	remove() {
-
-	}
-
 	async addImage(req, res) {
 		const data = await req.data;
 		const user = await this.users.getFromSession(req).catch(e=>{throw e});
@@ -124,7 +121,40 @@ class ProofApi {
 	}
 
 	removeImage() {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
 
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		if(data.id == undefined || data.id === "") {
+			return res.send(ApiErrors.MISSING("id"));
+		}
+
+		if(data.image == undefined || data.image === "") {
+			return res.send(ApiErrors.MISSING("image"));
+		}
+
+		const proof = await this.proofs.getModel({id: data.id});
+
+		if(proof === undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		const team = await this.teams.get({id: proof.team});
+
+		if(team === undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		if(user.id != team.leader) {
+			return res.send(ApiErrors.UNAUTHORIZED);
+		}
+
+		await this.proofs.removeImage(proof, data.image);
+
+		res.send({code: 200}, 200);
 	}
 
 	async setScores(req, res) {
