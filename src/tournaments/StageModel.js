@@ -54,12 +54,16 @@ class StageModel {
         return this.behaviour.getWinnersFromMatches(matchManager, teamManager);
     }
 
-    addWinner() {
-
+    addWinner(winner) {
+        this.winners.push(winner);
     }
 
-    get matchLength() {
-        return this.behaviour.matchLength;
+    getMatchLength(match) {
+        return this.behaviour.getMatchLength(match);
+    }
+
+    get defaultMatchLength() {
+        return this.behaviour.defaultMatchLength;
     }
 
     generateRounds(matchManager) {

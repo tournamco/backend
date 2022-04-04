@@ -1,5 +1,8 @@
+const nanoid = require("nanoid");
 const RoundModel = require("../RoundModel");
 const AbstractStageBehaviour = require("./AbstractStageBehaviour");
+
+const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 class PoolsStageBehaviour extends AbstractStageBehaviour {
 	constructor(stage) {
@@ -7,27 +10,54 @@ class PoolsStageBehaviour extends AbstractStageBehaviour {
 	}
 
 	getWinnersFromMatches(matchManager, teamManager) {
-		const teams = {};
+		const pools = [];
 
         for(const round of this.stage.rounds) {
-            for(let match of round.matches) {
-                match = matchManager.getModel({id: match});
-                //const winner = 
+            for(const matchId of round.matches) {
+                const match = matchManager.getModel({id: matchId});
+                const winnerKey = match.getWinner();
+                const winner = match.teams[winnerKey];
+                const pool = ALPHABET[match.name.charAt(6)];
 
-                //if(teams[])
+                if(pools[pool] === undefined) pools[pool] = {};
+                if(pools[pool][winner] === undefined) pools[pool][winner] = 0;
+
+                pools[pool][winner]++;
             }
         }
+
+        const winners = [];
+
+        for(const pool in pools) {
+            const values = Object.values(o).sort((a, b) => b - a);
+            
+            if (values.length <= n) {
+                winners.push(...pool.keys())
+                continue;
+            }
+
+            const maxN = values[n - this.stage.options.numberOfWinners < 0 ? 0 : n - this.stage.options.numberOfWinners];
+                
+            winners.push(...Object.entries(o)
+                .reduce((o, [k, v]) => v >= maxN ? { ...o, [k]: v } : o, {}).map(([k, v]) => k));
+        }
+
+        return winners;
 	}
 
-	get matchLength() {
-		return this.stage.options.bestOf * this.stage.tournament.gameLength;
-	}
+    get matchDefaultLength() {
+        return this.stage.options.bestOf * this.stage.tournament.gameLength;
+    }
+
+	getMatchLength(match) {
+        return match.games.length * this.stage.tournament.gameLength;
+    }
 
 	async generateRounds(matchManager) {
 		let rounds = [];
         const numberOfPools = Math.ceil(this.stage.numberOfParticipants / this.stage.options.poolSize);
         const pools = [];
-        const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        
 
         for(let i = 0; i < numberOfPools; i++) {
             const pool = [];

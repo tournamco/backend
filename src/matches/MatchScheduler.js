@@ -4,7 +4,8 @@ const BREAK_LENGTH = 15;
 
 class MatchScheduler {
 	async scheduleStage(matchManager, stage) {
-		const slots = this.findSlots(stage.maximalDate, stage.minimalDate, stage.maximalTime, stage.minimalTime, stage.matchLength);
+		const matchLengths = this.getMatchLengths(matchManager, stage);
+		const slots = this.findSlots(stage.maximalDate, stage.minimalDate, stage.maximalTime, stage.minimalTime, stage.matchLength, stage.defaultMatchLength);
 
 		const slotsPerRound = Math.floor(slots.length / stage.rounds.length);
 
@@ -25,13 +26,26 @@ class MatchScheduler {
 		}
 	}
 
-	findSlots(maximalDate, minimalDate, maximalTime, minimalTime, matchLength) {
+	getMatchLengths(matchManager, stage) {
+		const matches = stage.rounds.reduce((acc, round) => acc.concat(round.matches), []);
+		const matchLengths = [];
+
+		for(const matchId of matches) {
+			const match = matchManager.getModel({id: matchId});
+			matchLengths.push(stage.getMatchLength(match));
+		}
+
+		return matchLengths;
+	}
+
+	findSlots(maximalDate, minimalDate, maximalTime, minimalTime, matchLengths, defaultMatchLength) {
 		const slots = [];
 		const numberOfDays = maximalDate.diff(minimalDate, "days");
 
 		for(let i = 0; i <= numberOfDays; i++) {
 			let time = minimalTime.hour() * 60 + minimalTime.minutes();
 			const maxTime = maximalTime.hour() * 60 + maximalTime.minutes();
+			const matchLength = matchLengths.length > 0 ? matchLengths.pop() : defaultMatchLength;
 
 			while(time+matchLength < maxTime) {
 				const start = moment(minimalDate).add(i, "days").add(time, "minutes");

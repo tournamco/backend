@@ -4,7 +4,8 @@ class AbstractStageBehaviour {
 	}
 
 	getWinnersFromMatches(matchManager, teamManager) {};
-	get matchLength() {};
+	get matchDefaultLength() {};
+	getMatchLength() {};
 	generateRounds(matchManager) {};
 	isValid() {};
 }
