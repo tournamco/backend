@@ -261,14 +261,14 @@ class TournamentApi {
 		const data = await req.data;
 
 		if(data.local) {
-			this.discoveryLocal(req, res);
+			this.discoveryLocal(data, req, res);
 		}
 		else {
-			this.discoveryOnline(req, res);
+			this.discoveryOnline(data, req, res);
 		}
 	}
 
-	async discoveryLocal(req, res) {
+	async discoveryLocal(data, req, res) {
 		if(!req.data.hasOwnProperty("location")) {
 			return res.send(ApiErrors.MISSING("location"));
 		}

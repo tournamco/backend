@@ -107,8 +107,8 @@ class TournamentManager {
         
     }
 
-    async getFreeKey(tournament) {
-        const tournament = await this.getModel({id: tournament});
+    async getFreeKey(tournamentId) {
+        let tournament = await this.getModel({id: tournamentId});
 
         if(tournament == undefined) return;
 
