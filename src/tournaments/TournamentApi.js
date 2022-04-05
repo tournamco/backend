@@ -70,6 +70,10 @@ class TournamentApi {
 			return res.send(ApiErrors.MISSING("location"));
 		}
 
+		if(data.banner == undefined) {
+			return res.send(ApiErrors.MISSING("banner"));
+		}
+
 		const tournament = await this.tournaments.create({
 			name: data.name,
 			color: data.color,

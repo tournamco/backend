@@ -36,7 +36,7 @@ class TournamentModel {
 	getFreeKey() {
 		if(this.stages.length === 0) return;
 
-		return this.stages[0].freeKeys.shift();
+		return this.stages[this.currentStage].freeKeys.shift();
 	}
 
 	getAllMatches() {
