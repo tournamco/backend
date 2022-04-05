@@ -1,4 +1,5 @@
 const logger = require("../logging/Logger");
+const convert = require('geo-coordinates-parser');
 const ApiErrors = require("../net/server/UserApiErrors");
 
 class TournamentApi {
@@ -74,6 +75,17 @@ class TournamentApi {
 			return res.send(ApiErrors.MISSING("banner"));
 		}
 
+		let location;
+
+		if(!data.online) {
+			try {
+				location = convert(data.location);
+			}
+			catch {
+				return res.send(ApiErrors.INVALID_LOCATION);
+			}
+		}
+
 		const tournament = await this.tournaments.create({
 			name: data.name,
 			color: data.color,
@@ -85,7 +97,7 @@ class TournamentApi {
 			stages: data.stages,
 			banner: data.banner,
 			online: data.online,
-			location: data.location
+			location: [location.decimalLatitude, location.decimalLongitude]
 		});
 
 		if(tournament === undefined) {

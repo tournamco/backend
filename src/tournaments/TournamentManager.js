@@ -61,29 +61,30 @@ class TournamentManager {
 
         const stage = tournament.stages[tournament.currentStage];
 
-        for(const teamId of match.teams) {
+        /*for(const teamId of match.teams) {
             const team = await this.teams.getModel({id: teamId});
 
             if(team == undefined) continue;
             if(!await stage.teamPlayedAllMatches(team));
             if(!await this.isWinner(team)) continue;
 
+
         }
 
-        await this.checkIfTeamIsStageWinner(tournament, match);
+        await this.checkIfTeamIsStageWinner(tournament, match);*/
 
         if(await stage.isFinished(tournament, this.matches)) {
             await this.stageFinished(tournament);
         }
     }
 
-    checkIfTeamIsStageWinner() {
+    /*checkIfTeamIsStageWinner() {
         
     }
 
     isWinner(team) {
 
-    }
+    }*/
 
     async stageFinished(tournament) {
         const oldStage = tournament.stages[tournament.currentStage];
