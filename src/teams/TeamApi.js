@@ -20,6 +20,7 @@ class TeamApi {
 		router.post("/team/leave", (req, res) => this.leave(req, res));
 		router.get("/team/list", (req, res) => this.list(req, res));
 		router.post("/team/change", (req, res) => this.change(req, res));
+		router.get("/team/match/info", (req, res) => this.matchInfo(req, res));
 	}
 
 	async create(req, res) {
@@ -511,6 +512,40 @@ class TeamApi {
 		await this.matches.setResignLoser(match.id, team.key, this.teams);
 
 		res.send({code: 200}, 200);
+	}
+
+	async matchInfo(req, res) {
+		const data = await req.data;
+
+		if(data.match == undefined || data.match == "") {
+			return res.send(ApiErrors.MISSING("match"));
+		}
+
+		const match = await this.matches.getModel({id: data.match});
+
+		if(match == undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		const tournament = await this.tournaments.getModel({id: match.tournament});
+		const teamsData = {};
+
+		for(const key of match.keys) {
+			let team;
+
+			if(match.teams != undefined && match.teams[key] != undefined) {
+				team = teams.find(team => team.id === match.teams[key]);
+			}
+			else {
+				team = teams.find(team => team.key === key);
+			}
+
+			if(team == undefined) continue;
+
+			teamsData[key] = {id: team.id, name: team.name};
+		}
+		
+		res.send({code: 200, match: match.toPublicObject(this.users, tournament, teamsData, this.users)}, 200);
 	}
 }
 
