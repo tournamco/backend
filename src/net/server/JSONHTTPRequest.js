@@ -1,4 +1,5 @@
 const {URL} = require("url");
+const logger = require("../../logging/Logger");
 
 class JSONHTTPRequest {
     constructor(incomingMessage, cookies) {
@@ -29,6 +30,7 @@ class JSONHTTPRequest {
                     this.dataObject = JSON.parse(data);
                 }
                 catch(e) {
+                    logger.warn("JSON parse went wrong, data: " + data);
                     this.dataObject = {};
                 }
 
