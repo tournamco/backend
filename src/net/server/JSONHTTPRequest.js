@@ -27,11 +27,12 @@ class JSONHTTPRequest {
             this.incomingMessage.on("end", () => {
                 try {
                     this.dataObject = JSON.parse(data);
-                    resolve(this.dataObject);
                 }
                 catch(e) {
-                    reject(e);
+                    this.dataObject = {};
                 }
+
+                resolve(this.dataObject);
             })
         });
     }
