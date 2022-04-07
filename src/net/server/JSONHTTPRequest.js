@@ -30,7 +30,7 @@ class JSONHTTPRequest {
                     this.dataObject = JSON.parse(data);
                 }
                 catch(e) {
-                    logger.warn("JSON parse went wrong, data: " + data);
+                    logger.error("JSON parse went wrong, data: " + data);
                     this.dataObject = {};
                 }
 
