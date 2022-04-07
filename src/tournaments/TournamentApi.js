@@ -278,7 +278,7 @@ class TournamentApi {
 			return res.send(ApiErrors.MISSING("distance"));
 		}
 		
-		const tournaments = this.tournaments.getClosest(req.data.location, req.data.distance);
+		let tournaments = this.tournaments.getClosest(req.data.location, req.data.distance);
 
 		const pageNumber = data.pageNumber != undefined ? data.pageNumber : 0;
 		const pageSize = data.pageSize != undefined ? data.pageSize : 10;
@@ -289,7 +289,7 @@ class TournamentApi {
 	}
 
 	async discoveryOnline(data, req, res) {
-		const tournaments = await this.tournaments.getOnline();
+		let tournaments = await this.tournaments.getOnline();
 
 		const pageNumber = data.pageNumber != undefined ? data.pageNumber : 0;
 		const pageSize = data.pageSize != undefined ? data.pageSize : 10;
