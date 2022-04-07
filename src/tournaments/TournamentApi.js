@@ -270,11 +270,11 @@ class TournamentApi {
 	}
 
 	async discoveryLocal(data, req, res) {
-		if(!req.data.hasOwnProperty("location")) {
+		if(data.location == undefined || data.location === "") { 
 			return res.send(ApiErrors.MISSING("location"));
 		}
 
-		if(!req.data.hasOwnProperty("distance")) {
+		if(data.distance == undefined || data.distance == "") {
 			return res.send(ApiErrors.MISSING("distance"));
 		}
 		
