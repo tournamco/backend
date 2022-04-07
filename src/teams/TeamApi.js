@@ -323,6 +323,7 @@ class TeamApi {
 	}
 	
 	async listTournaments(req, res) {
+		const data = await req.data;
 		const user = await this.users.getFromSession(req).catch(e=>{throw e});
 
 		if(user === undefined) {
