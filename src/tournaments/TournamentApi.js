@@ -1,5 +1,5 @@
 const logger = require("../logging/Logger");
-const Coordinates = require('coordinates-parser');
+const Coordinates = require('coordinate-parser');
 const ApiErrors = require("../net/server/UserApiErrors");
 
 class TournamentApi {
