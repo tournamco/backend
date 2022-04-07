@@ -37,12 +37,15 @@ const errors = {
 		message: "The username and/or password is incorrect.",
 		errno: index++
 	},
+	MISSING_ERRNO: {
+		errno: index++
+	},
 	// When the tournament name is missing
 	MISSING: name => {return {
 		code: 400, 
 		reason: "Bad Request", 
 		message: `The input ${name} was not supplied.`,
-		errno: index++
+		errno: errors.MISSING_ERRNO.errno
 	};},
 	INCORRECT_OPTION_VALUES: {
 		code: 400, 
