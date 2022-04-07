@@ -1,5 +1,6 @@
 const logger = require("../logging/Logger");
 const Coordinates = require('coordinate-parser');
+const Helpers = require("../Helpers");
 const ApiErrors = require("../net/server/UserApiErrors");
 
 class TournamentApi {
@@ -7,12 +8,12 @@ class TournamentApi {
 		this.tournaments = tournaments;
 		this.users = users;
 
-		router.get("/tournament/info", (req, res) => this.create(req, res));
+		router.post("/tournament/info", (req, res) => this.create(req, res));
 		router.post("/tournament/create", (req, res) => this.create(req, res));
 		router.post("/tournament/delete", (req, res) => this.delete(req, res));
-		router.get("/tournament/match/list", (req, res) => this.listMatches(req, res));
-		router.get("/tournament/round/list", (req, res) => this.listRoundMatches(req, res));
-		router.get("/tournament/discovery", (req, res) => this.discovery(req, res));
+		router.post("/tournament/match/list", (req, res) => this.listMatches(req, res));
+		router.post("/tournament/round/list", (req, res) => this.listRoundMatches(req, res));
+		router.post("/tournament/discovery", (req, res) => this.discovery(req, res));
 	}
 
 	async info(req, res) {

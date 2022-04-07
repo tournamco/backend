@@ -15,12 +15,12 @@ class TeamApi {
 		router.post("/team/match/finish", (req, res) => this.finishMatch(req, res));
 		router.post("/team/match/list", (req, res) => this.listMatches(req, res));
 		router.post("/team/match/resign", (req, res) => this.resign(req, res));
-		router.get("/team/tournament/list", (req, res) => this.listTournaments(req, res));
-		router.get("/team/info", (req, res) => this.info(req, res));
+		router.post("/team/tournament/list", (req, res) => this.listTournaments(req, res));
+		router.post("/team/info", (req, res) => this.info(req, res));
 		router.post("/team/leave", (req, res) => this.leave(req, res));
-		router.get("/team/list", (req, res) => this.list(req, res));
+		router.post("/team/list", (req, res) => this.list(req, res));
 		router.post("/team/change", (req, res) => this.change(req, res));
-		router.get("/team/match/info", (req, res) => this.matchInfo(req, res));
+		router.post("/team/match/info", (req, res) => this.matchInfo(req, res));
 	}
 
 	async create(req, res) {

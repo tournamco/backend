@@ -18,6 +18,7 @@ class UserApi {
 		router.post("/user/logout", (req, res) => this.logout(req, res));
 		router.post("/user/change", (req, res) => this.change(req, res));
 		router.post("/user/changePassword", (req, res) => this.changePassword(req, res));
+		router.post("/user/me", (req, res) => this.me(req, res));
 	}
 
 	/**

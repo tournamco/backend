@@ -11,7 +11,7 @@ class ProofApi {
 		router.post("/proof/image/add", (req, res) => this.addImage(req, res));
 		router.post("/proof/image/remove", (req, res) => this.removeImage(req, res));
 		router.post("/proof/scores/set", (req, res) => this.setScores(req, res))
-		router.get("/proof/info", (req, res) => this.info(req, res))
+		router.post("/proof/info", (req, res) => this.info(req, res))
 	}
 
 	async create(req, res) {
