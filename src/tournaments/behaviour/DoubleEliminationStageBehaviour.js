@@ -46,7 +46,7 @@ class DoubleEliminationStageBehaviour extends AbstractStageBehaviour {
 				newUpperRemainder.push(winnerKey);
 				newLowerRemainder.push(loserKey);
 
-				const match = matchManager.create({name: `Match U${j+1}`, keys: [upperRemainder[j], upperRemainder[j+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, (i>=(this.stage.options.numberOfRound-this.stage.options.numberOfFinals)) ? this.stage.options.finalsBestOf : this.stage.options.bestOf);
+				const match = matchManager.create({name: `Match U${j+1}`, keys: [upperRemainder[j], upperRemainder[j+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, this.stage.options.bestOf);
 				round.addMatch(match);
 			}
 
@@ -81,6 +81,7 @@ class DoubleEliminationStageBehaviour extends AbstractStageBehaviour {
 
 	isValid() {
         if(this.stage.options.bestOf <= 0) return false;
+        if(this.stage.options.numberOfRounds <= 0) return false;
 
 		return true;
 	};

@@ -7,15 +7,24 @@ class MatchScheduler {
 		const slots = this.findSlots(stage.maximalDate, stage.minimalDate, stage.maximalTime, stage.minimalTime, stage.defaultMatchLength);
 		const slotsPerRound = Math.floor(slots.length / stage.rounds.length);
 		
-		if(slotsPerRound === 0) return;
+		if(slotsPerRound === 0) {
+			console.log("NO SLOTS PER ROUND", stage.rounds.length, slots.length);
+			return;
+		}
+		else {
+			console.log("SLOTS PER ROUND", slotsPerRound, stage.rounds.length, slotsPerRound);
+		}
 
 		for(let i = 0; i < stage.rounds.length; i++) {
 			const round = stage.rounds[i];
 			const matchesPerSlot = Math.floor(round.matches.length / slotsPerRound);
 
+			console.log("MATCHES PER SLOT", matchesPerSlot, i);
+
 			for(let j = 0; j < slotsPerRound; j++) {
 				const slot = slots[i*slotsPerRound+j];
 				
+				console.log("slot", slot, "index", j);
 				for(let l = 0; l < matchesPerSlot; l++) {
 					const match = round.matches[j*matchesPerSlot+l];
 					await matchManager.updateDate(match, slot.start, slot.end);
