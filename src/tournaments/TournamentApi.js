@@ -280,8 +280,22 @@ class TournamentApi {
 		if(data.distance == undefined || data.distance == "") {
 			return res.send(ApiErrors.MISSING("distance"));
 		}
+
+		let latitute = undefined;
+		let longitude = undefined;
+
+		if(!data.online) {
+			try {
+				const location = new Coordinates(data.location);
+				latitute = location.getLatitude();
+				longitude = location.getLongitude();
+			}
+			catch {
+				return res.send(ApiErrors.INVALID_LOCATION);
+			}
+		}
 		
-		let tournaments = this.tournaments.getClosest(req.data.location, req.data.distance);
+		let tournaments = this.tournaments.getClosest([latitute, longitude], parseFloat(data.distance));
 
 		const pageNumber = data.pageNumber != undefined ? data.pageNumber : 0;
 		const pageSize = data.pageSize != undefined ? data.pageSize : 10;
