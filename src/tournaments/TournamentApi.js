@@ -168,6 +168,9 @@ class TournamentApi {
 			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate < b.startDate ? 1 : -1);
 		}
 
+		const pageNumber = data.pageNumber != undefined ? data.pageNumber : 0;
+		const pageSize = data.pageSize != undefined ? data.pageSize : 10;
+
 		matches = Helpers.pageArray(matches, pageNumber, pageSize);
 
 		const matchesData = [];
