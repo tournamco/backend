@@ -347,7 +347,7 @@ class TeamApi {
 
 			if(tournament.stages[tournament.stages.length - 1].winners != undefined) continue;
 
-			tournaments.push(tournament.toPublicObject(this.users));
+			tournaments.push(await tournament.toPublicObject(this.users));
 		}
 
 		tournaments = Helpers.pageArray(tournaments, pageNumber, pageSize);
