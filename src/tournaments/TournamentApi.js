@@ -23,13 +23,13 @@ class TournamentApi {
 			return res.send(ApiErrors.MISSING("tournament"));
 		}
 
-		const tournament = this.tournaments.get({id: data.tournament});
+		const tournament = this.tournaments.getModel({id: data.tournament});
 
 		if(tournament == null) {
 			return res.send(ApiErrors.NOT_FOUND);
 		}
 
-		res.send({code: 200, tournament: tournament.toPublicObject()}, 200);
+		res.send({code: 200, tournament: await tournament.toPublicObject(this.users)}, 200);
 	}
 
 	async create(req, res) {
