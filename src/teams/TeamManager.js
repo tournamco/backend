@@ -25,13 +25,16 @@ class TeamManager {
 	}
 
 	async addMember(id, member) {
-		const team = this.getModel({id});
+		const team = await this.getModel({id});
 
+		if(team === undefined) return;
 		if(team.members.length === team.teamSize) return;
 
 		team.addMember(member);
 
 		await this.collection.replaceOne({id}, team.toDocument());
+
+		return true;
 	}
 
 	async setLeader(id, user) {
