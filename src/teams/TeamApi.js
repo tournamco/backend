@@ -378,13 +378,11 @@ class TeamApi {
 			res.send({code: 200, teams: await Promise.all(teams.map(async team => await team.toPublicObject(this.users)))}, 200);
 		}
 		else {
-			const team = this.teams.getModel({id: data.id});
+			const team = await this.teams.getModel({id: data.id});
 
 			if(team == undefined) {
 				return res.send(ApiErrors.NOT_FOUND);
 			}
-
-			console.log(team);
 
 			res.send({code: 200, team: await team.toPublicObject(this.users)}, 200);
 		}
