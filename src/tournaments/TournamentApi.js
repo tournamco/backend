@@ -302,7 +302,7 @@ class TournamentApi {
 
 		tournaments = Helpers.pageArray(tournaments, pageNumber, pageSize);
 
-		res.send({code: 200, tournaments: tournaments.map(tournament => tournament.toPublicObject(this.users))}, 200);
+		res.send({code: 200, tournaments: await Promise.all(tournaments.map(tournament => await tournament.toPublicObject(this.users)))}, 200);
 	}
 
 	async discoveryOnline(data, req, res) {
@@ -313,7 +313,7 @@ class TournamentApi {
 
 		tournaments = Helpers.pageArray(tournaments, pageNumber, pageSize);
 
-		res.send({code: 200, tournaments: tournaments.map(tournament => tournament.toPublicObject(this.users))}, 200);
+		res.send({code: 200, tournaments: await Promise.all(tournaments.map(tournament => await tournament.toPublicObject(this.users)))}, 200);
 	}
 }
 
