@@ -291,8 +291,6 @@ class TeamApi {
 			tournaments.push(tournament);
 		}
 
-		console.log("Number of matches, tournaments", matches.length, tournaments.length);
-
 		if(data.future) {
 			matches = matches.filter(match => match.endDate >= new Date().getTime());
 			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate > b.startDate ? 1 : -1);
@@ -301,8 +299,6 @@ class TeamApi {
 			matches = matches.filter(match => match.endDate < new Date().getTime());
 			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate < b.startDate ? 1 : -1);
 		}
-
-		console.log("Matches b", matches.length);
 
 		matches = Helpers.pageArray(matches, pageNumber, pageSize);
 
@@ -326,7 +322,7 @@ class TeamApi {
 				teamsData[key] = {id: team.id, name: team.name};
 			}
 
-			matchesData.push(await match.toPublicObject(tournaments.find(tournament => tournament.id === match.tournament), teams, this.users));
+			matchesData.push(await match.toPublicObject(match, tournaments.find(tournament => tournament.id === match.tournament), teams, this.users));
 		}
 
 		res.send({code: 200, matches: matchesData}, 200);
