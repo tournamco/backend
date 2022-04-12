@@ -86,7 +86,7 @@ class UserManager {
 
 		user.password = this.hashPassword(password);
 
-		await this.collection.updateOne({id: userId}, user);
+		await this.collection.replaceOne({id: userId}, user);
 	}
 
 	async changeUsername(userId, username) {
@@ -96,7 +96,7 @@ class UserManager {
 
 		user.username = username;
 
-		await this.collection.updateOne({id: userId}, user);
+		await this.collection.replaceOne({id: userId}, user);
 	}
 
 	async changeEmail(userId, email) {
@@ -106,7 +106,7 @@ class UserManager {
 
 		user.email = email;
 
-		await this.collection.updateOne({id: userId}, user);
+		await this.collection.replaceOne({id: userId}, user);
 	}
 
 	async changeGamertag(userId, gamertag) {
@@ -116,7 +116,7 @@ class UserManager {
 
 		user.gamertag = gamertag;
 
-		await this.collection.updateOne({id: userId}, user);
+		await this.collection.replaceOne({id: userId}, user);
 	}
 
 	async changeIcon(userId, icon) {
@@ -126,7 +126,7 @@ class UserManager {
 
 		user.icon = icon;
 
-		await this.collection.updateOne({id: userId}, user);
+		await this.collection.replaceOne({id: userId}, user);
 	}
 
 	async getIdFromUsername(username) {
