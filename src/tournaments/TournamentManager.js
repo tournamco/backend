@@ -33,7 +33,7 @@ class TournamentManager {
                 maximalTime: stageData.maximalTime,
                 options: stageData.options,
                 freeKeys: [],
-                winners: undefined
+                winners: []
             }, tournament);
 
             if(!stage.isValid()) return undefined;
@@ -72,6 +72,7 @@ class TournamentManager {
         await this.checkIfTeamIsStageWinner(tournament, match);*/
 
         if(await stage.isFinished(tournament, this.matches)) {
+
             await this.stageFinished(tournament);
         }
     }
