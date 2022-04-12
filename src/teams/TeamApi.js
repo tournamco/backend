@@ -342,6 +342,8 @@ class TeamApi {
 		const teams = await this.teams.getUserTeams(user);
 		let tournaments = [];
 
+		console.log(teams);
+
 		for(const team of teams) {
 			const tournament = await this.tournaments.getModel({id: team.tournament});
 
@@ -350,7 +352,12 @@ class TeamApi {
 			tournaments.push(await tournament.toPublicObject(this.users));
 		}
 
+		console.log(tournaments, pageNumber, pageSize);
+
 		tournaments = Helpers.pageArray(tournaments, pageNumber, pageSize);
+
+		
+		console.log(tournaments.length, pageNumber, pageSize);
 
 		res.send({code: 200, tournaments}, 200);
 	}
