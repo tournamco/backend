@@ -29,6 +29,8 @@ class TournamentApi {
 			return res.send(ApiErrors.NOT_FOUND);
 		}
 
+		console.log(tournament);
+
 		res.send({code: 200, tournament: await tournament.toPublicObject(this.users)}, 200);
 	}
 
