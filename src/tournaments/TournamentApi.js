@@ -101,7 +101,7 @@ class TournamentApi {
 			stages: data.stages,
 			banner: data.banner,
 			online: data.online,
-			location: [lat, longitude]
+			location: [latitute, longitude]
 		});
 
 		if(tournament === undefined) {
