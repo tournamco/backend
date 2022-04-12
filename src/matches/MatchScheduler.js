@@ -36,14 +36,23 @@ class MatchScheduler {
 	findSlots(maximalDate, minimalDate, maximalTime, minimalTime, defaultMatchLength) {
 		const slots = [];
 		const numberOfDays = maximalDate.diff(minimalDate, "days");
+		const maxTime = maximalTime.hour() * 60 + maximalTime.minutes();
+
+		console.log("numberOfDays", numberOfDays);
+
 		for(let i = 0; i <= numberOfDays; i++) {
 			let time = minimalTime.hour() * 60 + minimalTime.minutes();
-			const maxTime = maximalTime.hour() * 60 + maximalTime.minutes();
+
+			console.log("time from", time, "until", maxTime, time+defaultMatchLength, time+defaultMatchLength < maxTime);
 
 			while(time+defaultMatchLength < maxTime) {
 				const start = moment(minimalDate).add(i, "days").add(time, "minutes");
 				const end = moment(start).add(defaultMatchLength, "minutes");
+
 				time += defaultMatchLength + BREAK_LENGTH;
+
+				console.log("start", start, "end", end, "time", time);
+
 				slots.push({start, end});
 			}
 		}
