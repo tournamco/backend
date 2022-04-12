@@ -347,7 +347,7 @@ class TeamApi {
 		for(const team of teams) {
 			const tournament = await this.tournaments.getModel({id: team.tournament});
 
-			if(tournament.stages[tournament.stages.length - 1].winners != undefined) continue;
+			if(tournament.stages[tournament.stages.length - 1].winners.length > 0) continue;
 
 			tournaments.push(await tournament.toPublicObject(this.users));
 		}
