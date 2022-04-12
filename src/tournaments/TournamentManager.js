@@ -150,7 +150,7 @@ class TournamentManager {
     }
 
     async getOnline() {
-        const tournamentsData = await (await this.collection.find({online: true})).toArray();
+        const tournamentsData = await (await this.collection.find({})).toArray();
 
         return tournamentsData.map(tournament => new TournamentModel(tournament));
     }
