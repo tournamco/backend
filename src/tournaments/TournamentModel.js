@@ -71,6 +71,7 @@ class TournamentModel {
 	}
 
 	async toPublicObject(userManager) {
+		console.log(this.organizer, await userManager.getModel({id: this.organizer}));
 		return {
 			id: this.id,
 			name: this.name,
