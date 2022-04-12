@@ -38,7 +38,7 @@ class MatchScheduler {
 		const numberOfDays = maximalDate.diff(minimalDate, "days");
 		const maxTime = maximalTime.hour() * 60 + maximalTime.minutes();
 
-		console.log("numberOfDays", numberOfDays);
+		console.log("numberOfDays", numberOfDays, maximalDate, minimalDate);
 
 		for(let i = 0; i <= numberOfDays; i++) {
 			let time = minimalTime.hour() * 60 + minimalTime.minutes();

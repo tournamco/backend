@@ -29,7 +29,7 @@ class TournamentManager {
                 rounds: [], 
                 minimalDate: stageData.minimalDate,
                 minimalTime: stageData.minimalTime,
-                maximalDate: stageData.minimalDate,
+                maximalDate: stageData.maximalDate,
                 maximalTime: stageData.maximalTime,
                 options: stageData.options,
                 freeKeys: [],
