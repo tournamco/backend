@@ -35,6 +35,18 @@ class UserManager {
 		return crypto.createHmac("sha512", config.users.passwordSalt).update(password).digest("hex");
 	}
 
+	get(data) {
+		return this.collection.findOne(data);
+	}
+
+	async getModel(data) {
+		const user = await this.get(data);
+
+		if(user === undefined) return;
+
+		return new UserModel(user);
+	}
+
 	async checkPasswordByUsername(username, password) {
 		const user = await this.collection.findOne({username});
 
