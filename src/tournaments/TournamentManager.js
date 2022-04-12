@@ -6,7 +6,7 @@ const TournamentModel = require("./TournamentModel");
 
 class TournamentManager {
     constructor({matches, users, router}) {
-        new TournamentApi(this, users, router);
+        new TournamentApi(this, users, matches, router);
         this.matches = matches;
     }
 

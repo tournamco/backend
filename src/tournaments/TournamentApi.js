@@ -4,8 +4,9 @@ const Helpers = require("../Helpers");
 const ApiErrors = require("../net/server/UserApiErrors");
 
 class TournamentApi {
-	constructor(tournaments, users, router) {
+	constructor(tournaments, users, matches, router) {
 		this.tournaments = tournaments;
+		this.matches = matches;
 		this.users = users;
 
 		router.post("/tournament/info", (req, res) => this.info(req, res));
