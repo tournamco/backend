@@ -291,6 +291,8 @@ class TeamApi {
 			tournaments.push(tournament);
 		}
 
+		console.log("Number of matches, tournaments", matches.length, tournaments.length);
+
 		if(data.future) {
 			matches = matches.filter(match => match.endDate >= new Date().getTime());
 			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate > b.startDate ? 1 : -1);
@@ -299,6 +301,8 @@ class TeamApi {
 			matches = matches.filter(match => match.endDate < new Date().getTime());
 			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate < b.startDate ? 1 : -1);
 		}
+
+		console.log("Matches b", matches.length);
 
 		matches = Helpers.pageArray(matches, pageNumber, pageSize);
 
