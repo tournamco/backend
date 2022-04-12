@@ -375,7 +375,7 @@ class TeamApi {
 				teams.push(team);
 			}
 
-			res.send({code: 200, teams: teams.map(team => team.toPublicObject(this.users))}, 200);
+			res.send({code: 200, teams: await Promise.all(teams.map(async team => await team.toPublicObject(this.users)))}, 200);
 		}
 		else {
 			const team = this.teams.getModel({id: data.id});
@@ -384,7 +384,7 @@ class TeamApi {
 				return res.send(ApiErrors.NOT_FOUND);
 			}
 
-			res.send({code: 200, team: team.toPublicObject(this.users)}, 200);
+			res.send({code: 200, team: await team.toPublicObject(this.users)}, 200);
 		}
 	}
 
