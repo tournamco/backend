@@ -67,8 +67,6 @@ class TournamentManager {
             if(team == undefined) continue;
             if(!await stage.teamPlayedAllMatches(team));
             if(!await this.isWinner(team)) continue;
-
-
         }
 
         await this.checkIfTeamIsStageWinner(tournament, match);*/
@@ -78,13 +76,13 @@ class TournamentManager {
         }
     }
 
-    /*checkIfTeamIsStageWinner() {
+    checkIfTeamIsStageWinner() {
         
     }
 
     isWinner(team) {
 
-    }*/
+    }
 
     async stageFinished(tournament) {
         const oldStage = tournament.stages[tournament.currentStage];
@@ -108,7 +106,7 @@ class TournamentManager {
     }
 
     async getFreeKey(tournamentId) {
-        let tournament = await this.getModel({id: tournamentId});
+        const tournament = await this.getModel({id: tournamentId});
 
         if(tournament == undefined) return;
 

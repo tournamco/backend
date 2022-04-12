@@ -76,11 +76,14 @@ class TournamentApi {
 			return res.send(ApiErrors.MISSING("banner"));
 		}
 
-		let location;
+		let latitute = undefined;
+		let longitude = undefined;
 
 		if(!data.online) {
 			try {
-				location = new Coordinates(data.location);
+				const location = new Coordinates(data.location);
+				latitute = location.getLatitude();
+				longitude = location.getLongitude();
 			}
 			catch {
 				return res.send(ApiErrors.INVALID_LOCATION);
@@ -98,7 +101,7 @@ class TournamentApi {
 			stages: data.stages,
 			banner: data.banner,
 			online: data.online,
-			location: [location.getLatitude(), location.getLongitude()]
+			location: [lat, longitude]
 		});
 
 		if(tournament === undefined) {
