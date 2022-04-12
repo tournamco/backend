@@ -77,7 +77,7 @@ class TournamentModel {
 			game: this.game,
 			teams: this.teams,
 			stages: this.stages.map(stage => stage.toPublicObject()),
-			organizer: await userManager.getModel({id: this.organizer}).toPublicObject(),
+			organizer: (await userManager.getModel({id: this.organizer})).toPublicObject(),
 			isPublic: this.isPublic,
 			color: this.color,
 			teamSize: this.teamSize,
