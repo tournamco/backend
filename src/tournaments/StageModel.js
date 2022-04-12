@@ -92,6 +92,10 @@ class StageModel {
             name: this.name,
             numberOfParticipants: this.numberOfParticipants,
             rounds: this.rounds.map(round => round.toPublicObject()),
+            minimalDate: this.minimalDate.format("YYYY-MM-DD"),
+            minimalTime: this.minimalTime.format("hh:mm"),
+            maximalDate: this.maximalDate.format("YYYY-MM-DD"),
+            maximalTime: this.maximalTime.format("hh:mm"),
             winners: this.winners,
             options: this.options
         };
