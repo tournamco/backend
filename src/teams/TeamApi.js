@@ -384,6 +384,8 @@ class TeamApi {
 				return res.send(ApiErrors.NOT_FOUND);
 			}
 
+			console.log(team);
+
 			res.send({code: 200, team: await team.toPublicObject(this.users)}, 200);
 		}
 	}
