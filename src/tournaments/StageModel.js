@@ -58,12 +58,8 @@ class StageModel {
         this.winners.push(winner);
     }
 
-    getMatchLength(match) {
-        return this.behaviour.getMatchLength(match);
-    }
-
     get defaultMatchLength() {
-        return this.behaviour.defaultMatchLength;
+        return this.options.bestOf * this.tournament.gameLength;
     }
 
     generateRounds(matchManager) {

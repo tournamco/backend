@@ -45,14 +45,6 @@ class PoolsStageBehaviour extends AbstractStageBehaviour {
         return winners;
 	}
 
-    get matchDefaultLength() {
-        return this.stage.options.bestOf * this.stage.tournament.gameLength;
-    }
-
-	getMatchLength(match) {
-        return match.games.length * this.stage.tournament.gameLength;
-    }
-
 	async generateRounds(matchManager) {
 		let rounds = [];
         const numberOfPools = Math.ceil(this.stage.numberOfParticipants / this.stage.options.poolSize);
