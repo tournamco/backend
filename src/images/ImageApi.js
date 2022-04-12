@@ -7,7 +7,7 @@ class ImageApi {
 		this.users = users;
 		
 		router.post("/image/upload", (req, res) => this.upload(req, res));
-		router.get("/image/download", (req, res) => this.download(req, res));
+		router.post("/image/download", (req, res) => this.download(req, res));
 	}
 
 	async upload(req, res) {

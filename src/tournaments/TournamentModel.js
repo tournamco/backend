@@ -84,7 +84,7 @@ class TournamentModel {
 			gameLength: this.gameLength,
 			currentStage: this.currentStage,
 			banner: this.banner,
-			location: this.location,
+			location: [this.location.coordinates[0], this.location.coordinates[1]],
 			online: this.online
 		}
 	}
