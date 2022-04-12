@@ -15,9 +15,9 @@ class TeamManager {
 		this.invites.init({database});
 	}
 
-	async create({name, leader, tournament, teamSize, isPublic}) {
+	async create({name, leader, tournament, teamSize, isPublic, icon}) {
 		const id = nanoid(16);
-		const team = new TeamModel({id, name, leader, tournament, teamSize, isPublic, members: [], icon: undefined});
+		const team = new TeamModel({id, name, leader, tournament, teamSize, isPublic, members: [], icon});
 
 		await this.collection.insertOne(team.toDocument());
 

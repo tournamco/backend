@@ -63,7 +63,8 @@ class TeamApi {
 			leader: undefined,
 			tournament: tournament.id,
 			teamSize: tournament.teamSize,
-			isPublic: data.isPublic
+			isPublic: data.isPublic,
+			icon: undefined
 		});
 
 		const key = await this.tournaments.addTeam(tournament.id, team.id);
@@ -98,12 +99,17 @@ class TeamApi {
 			return res.send(ApiErrors.ALREADY_IN_TOURNAMENT_LEADER);
 		}
 
+		if(data.icon == undefined || data.icon === "") {
+			return res.send(ApiErrors.MISSING("icon"));
+		}
+
 		const team = await this.teams.create({
 			name: data.name,
 			leader: user.id,
 			tournament: tournament.id,
 			teamSize: tournament.teamSize,
-			isPublic: data.isPublic
+			isPublic: data.isPublic,
+			icon: data.icon
 		});
 
 		await this.teams.addMember(team.id, user.id);
