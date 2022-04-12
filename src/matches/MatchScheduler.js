@@ -18,18 +18,15 @@ class MatchScheduler {
 
 		for(let i = 0; i < stage.rounds.length; i++) {
 			const round = stage.rounds[i];
-			const matchesPerSlot = Math.floor(round.matches.length / slotsPerRound);
+			const timeSlotsPerMatch = slotsPerRound / round.matches.length;
 
-			console.log("MATCHES PER SLOT", matchesPerSlot, i);
+			for(let j = 0; j < round.matches.length; j++) {
+				const match = round.matches[j];
+				const slot = slots[i*slotsPerRound+Math.floor(j*timeSlotsPerMatch)];
 
-			for(let j = 0; j < slotsPerRound; j++) {
-				const slot = slots[i*slotsPerRound+j];
-				
-				console.log("slot", slot, "index", j);
-				for(let l = 0; l < matchesPerSlot; l++) {
-					const match = round.matches[j*matchesPerSlot+l];
-					await matchManager.updateDate(match, slot.start, slot.end);
-				}
+				console.log("match", match, "start", slot.start, "end", slot.end);
+
+				await matchManager.updateDate(match, slot.start, slot.end);
 			}
 		}
 	}
