@@ -1,4 +1,5 @@
 const mime = require('mime-types');
+const logger = require('../logging/Logger');
 const ApiErrors = require("../net/server/UserApiErrors");
 
 class ImageApi {
@@ -13,9 +14,9 @@ class ImageApi {
 	async upload(req, res) {
 		const user = await this.users.getFromSession(req).catch(e=>{throw e});
 
-		if(user === undefined) {
-			return res.send(ApiErrors.NOT_LOGGED_IN);
-		}
+		//if(user === undefined) {
+		//	return res.send(ApiErrors.NOT_LOGGED_IN);
+		//}
 
 		const extension = mime.extension(req.header("content-type"));
 
@@ -24,9 +25,11 @@ class ImageApi {
 		}
 
 		const id = await this.images.create({
-			user: user.id,
+			user: undefined,
 			extension
 		});
+
+		logger.info("Saving new image: " + id);
 
 		await this.images.save(id, extension, req.incomingMessage);
 
