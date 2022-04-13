@@ -42,7 +42,7 @@ class UserManager {
 	async getModel(data) {
 		const user = await this.get(data);
 
-		if(user === undefined) return;
+		if(user == undefined) return;
 
 		return new UserModel(user);
 	}
