@@ -144,7 +144,7 @@ class TournamentManager {
     }
 
     async getOrganizingTournaments(user) {
-        const tournaments = await (await this.collection.find({"orgainizer": user.id})).toArray();
+        const tournaments = await (await this.collection.find({"organizer": user.id})).toArray();
 
         return tournaments.map(tournament => new TournamentModel(tournament));
     }
