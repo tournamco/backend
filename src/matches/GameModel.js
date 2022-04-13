@@ -46,7 +46,7 @@ class GameModel {
 	}
 
 	getWinners() {
-		const winners = [];
+		let winners = [];
 		const winningScore = 0;
 
 		for(const key of Object.keys(this.scores)) {
