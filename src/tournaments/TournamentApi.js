@@ -77,8 +77,8 @@ class TournamentApi {
 			return res.send(ApiErrors.MISSING("banner"));
 		}
 
-		let latitute = undefined;
-		let longitude = undefined;
+		let latitute = 0;
+		let longitude = 0;
 
 		if(!data.online) {
 			try {
