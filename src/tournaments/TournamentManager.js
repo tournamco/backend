@@ -177,6 +177,10 @@ class TournamentManager {
 
         return teams;
     }
+
+    getTeamManager() {
+        return this.teams;
+    }
 }
 
 module.exports = TournamentManager;

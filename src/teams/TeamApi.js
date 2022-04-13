@@ -305,7 +305,7 @@ class TeamApi {
 		const matchesData = [];
 
 		for(const match of matches) {
-			matchesData.push(await match.toPublicObject(match, tournaments.find(tournament => tournament.id === match.tournament), teams, this.users));
+			matchesData.push(await match.toPublicObject(match, tournaments.find(tournament => tournament.id === match.tournament), this.teams, this.users));
 		}
 
 		res.send({code: 200, matches: matchesData}, 200);
@@ -525,9 +525,8 @@ class TeamApi {
 		}
 
 		const tournament = await this.tournaments.getModel({id: match.tournament});
-		const teams = await this.tournaments.getAllTeams(tournament.id);
 
-		res.send({code: 200, match: await match.toPublicObject(match, tournament, teams, this.users)}, 200);
+		res.send({code: 200, match: await match.toPublicObject(match, tournament, this.teams, this.users)}, 200);
 	}
 }
 

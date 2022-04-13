@@ -65,17 +65,17 @@ class MatchModel {
 		return this.games[index];
 	}
 
-	async toPublicObject(match, tournament, teams, userManager) {
+	async toPublicObject(match, tournament, teamManager, userManager) {
 		const teamsData = {};
 
 		for(const key of match.keys) {
 			let team;
 
 			if(match.teams != undefined && match.teams[key] != undefined) {
-				team = teams.find(team => team.id === match.teams[key]);
+				team = await teamManager.getModel({id: match.teams[key]});
 			}
 			else {
-				team = teams.find(team => team.key === key);
+				team = await teamManager.getModel({key});
 			}
 
 			if(team == undefined) continue;
