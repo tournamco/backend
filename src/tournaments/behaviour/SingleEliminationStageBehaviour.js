@@ -35,7 +35,9 @@ class SingleEliminationStageBehaviour extends AbstractStageBehaviour {
 		let i = 0;
 
 		for(let j = 0; j < this.stage.numberOfParticipants; j++) {
-			remainder.push(nanoid(8));
+			const id = nanoid(8);
+			this.stage.freeKeys.push(id);
+			remainder.push(id);
 		}
 
 		while(remainder.length > 1 && i < this.stage.options.numberOfRounds) {

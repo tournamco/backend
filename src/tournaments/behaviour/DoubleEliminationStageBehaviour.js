@@ -29,6 +29,12 @@ class DoubleEliminationStageBehaviour extends AbstractStageBehaviour {
 		let lowerRemainder = [];
 		let i = 0;
 
+		for(let j = 0; j < this.stage.numberOfParticipants; j++) {
+			const id = nanoid(8);
+			this.stage.freeKeys.push(id);
+			upperRemainder.push(id);
+		}
+
 		while(lowerRemainder.length > 1 && i < this.stage.options.numberOfRounds) {
 			const round = new RoundModel({id: nanoid(16), name: `Round ${i+1}`, matches: []}, this.stage);
 			let newUpperRemainder = [];

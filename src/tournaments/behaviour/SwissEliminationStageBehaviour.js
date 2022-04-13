@@ -41,9 +41,12 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 		let rounds = [];
 		let wins = [];
 		let k = 0;
-		const numberOfRounds = this.stage.options.numberOfWins * 2 - 1;
 
-		wins[0] = Array.fill(Math.pow(2, this.stage.numberOfWins + 1)).map(() => nanoid(8));
+		wins[0] = Array.fill(Math.pow(2, this.stage.numberOfWins + 1)).map(() => {
+			const id = nanoid(8)
+			this.stage.freeKeys.push(id);
+			return id;
+		});
 
 		for(let i = 0; i < this.stage.options.numberOfWins; i++) {
 			const round = new RoundModel({id: nanoid(16), name: `Round ${k+1}`, matches: []}, this.stage);
