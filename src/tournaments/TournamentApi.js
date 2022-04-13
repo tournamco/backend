@@ -102,7 +102,7 @@ class TournamentApi {
 			stages: data.stages,
 			banner: data.banner,
 			online: data.online,
-			location: [latitute, longitude]
+			location: [longitude, latitute]
 		});
 
 		if(tournament === undefined) {
@@ -299,7 +299,7 @@ class TournamentApi {
 			}
 		}
 		
-		let tournaments = this.tournaments.getClosest([latitute, longitude], parseFloat(data.distance));
+		let tournaments = this.tournaments.getClosest([longitude, latitute], parseFloat(data.distance));
 
 		const pageNumber = data.pageNumber != undefined ? data.pageNumber : 0;
 		const pageSize = data.pageSize != undefined ? data.pageSize : 10;
