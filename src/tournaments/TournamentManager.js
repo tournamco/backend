@@ -163,6 +163,20 @@ class TournamentManager {
 
         return new TournamentModel(contents);
     }
+
+    async getAllTeams(id) {
+        const tournament = await this.get({id});
+
+        if(tournament == undefined) return;
+
+        const teams = [];
+
+        for(const team of tournament.teams) {
+            teams.push(await this.teams.getModel({id: team}));
+        }
+
+        return teams;
+    }
 }
 
 module.exports = TournamentManager;

@@ -305,23 +305,6 @@ class TeamApi {
 		const matchesData = [];
 
 		for(const match of matches) {
-			const teamsData = {};
-
-			for(const key of match.keys) {
-				let team;
-
-				if(match.teams != undefined && match.teams[key] != undefined) {
-					team = teams.find(team => team.id === match.teams[key]);
-				}
-				else {
-					team = teams.find(team => team.key === key);
-				}
-
-				if(team == undefined) continue;
-
-				teamsData[key] = {id: team.id, name: team.name};
-			}
-
 			matchesData.push(await match.toPublicObject(match, tournaments.find(tournament => tournament.id === match.tournament), teams, this.users));
 		}
 
@@ -542,24 +525,9 @@ class TeamApi {
 		}
 
 		const tournament = await this.tournaments.getModel({id: match.tournament});
-		const teamsData = {};
-
-		for(const key of match.keys) {
-			let team;
-
-			if(match.teams != undefined && match.teams[key] != undefined) {
-				team = await this.teams.get({id: match.teams[key]});
-			}
-			else {
-				team = await this.teams.get({key});
-			}
-
-			if(team == undefined) continue;
-
-			teamsData[key] = {id: team.id, name: team.name};
-		}
+		const teams = await this.tournaments.getAllTeams(tournament.id);
 		
-		res.send({code: 200, match: match.toPublicObject(match, this.users, tournament, teamsData, this.users)}, 200);
+		res.send({code: 200, match: match.toPublicObject(match, this.users, tournament, teams, this.users)}, 200);
 	}
 }
 
