@@ -52,6 +52,7 @@ class DisputeApi {
 
 		const game = match.getGame(dispute.game);
 		const proof = await this.proofs.getModel({id: game.proofs[data.key]});
+		
 		await this.matches.setGameScores(match.id, dispute.game, proof.scores);
 
 		await this.disputes.remove({id: dispute.id});

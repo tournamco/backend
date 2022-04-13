@@ -71,10 +71,12 @@ class DoubleEliminationStageBehaviour extends AbstractStageBehaviour {
 			i++;
 		}
 
-		const round = new RoundModel({id: nanoid(16), name: `Round ${i+1}`, matches: []}, this.stage);
-		const match = matchManager.create({name: `Match F1`, keys: [upperRemainder[0], lowerRemainder[0]], tournament: this.stage.tournament.id}, this.stage.options.bestOf);
-		round.addMatch(match);
-		rounds.push(round);
+		if(i < this.stage.options.numberOfRounds) {
+			const round = new RoundModel({id: nanoid(16), name: `Round ${i+1}`, matches: []}, this.stage);
+			const match = matchManager.create({name: `Match F1`, keys: [upperRemainder[0], lowerRemainder[0]], tournament: this.stage.tournament.id}, this.stage.options.bestOf);
+			round.addMatch(match);
+			rounds.push(round);
+		}
 
 		return rounds;
 	};

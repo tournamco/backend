@@ -67,7 +67,11 @@ class ProofManager {
 	}
 
 	async getModel(data) {
-		return new ProofModel(await this.get(data));
+		const proof = await this.get(data);
+
+		if(proof === undefined) return;
+
+		return new ProofModel(proof);
 	}
 }
 
