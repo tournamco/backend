@@ -150,13 +150,13 @@ class TournamentManager {
     }
 
     async getClosest(location, radius) {
-        const tournamentsData = await (await this.collection.aggregate({location: {$geoNear: {near: {type: "Point", coordinates: location}, maxDistance: radius}}})).toArray();
+        const tournamentsData = await (await this.collection.aggregate([{$geoNear: {near: {type: "Point", coordinates: location}, maxDistance: radius}}])).toArray();
 
         return tournamentsData.map(tournament => new TournamentModel(tournament));
     }
 
     async getOnline() {
-        const tournamentsData = await (await this.collection.find({})).toArray();
+        const tournamentsData = await (await this.collection.find({online: true})).toArray();
 
         return tournamentsData.map(tournament => new TournamentModel(tournament));
     }
