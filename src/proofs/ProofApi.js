@@ -195,9 +195,7 @@ class ProofApi {
 			break;
 		}
 
-		console.log("Authorization", team, await this.proofs.getTeam(data.proof));
-
-		if(team === undefined || team.key !== await this.proofs.getTeam(data.proof)) {
+		if(team === undefined || team.id !== await this.proofs.getTeam(data.proof)) {
 			return res.send(ApiErrors.UNAUTHORIZED);
 		}
 
