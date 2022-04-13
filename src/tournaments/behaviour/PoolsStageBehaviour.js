@@ -89,6 +89,7 @@ class PoolsStageBehaviour extends AbstractStageBehaviour {
 	}
 
 	isValid() {
+        console.log("The options are", this.stage.options);
 		if(this.stage.options.poolSize <= 0) return false;
         if(this.stage.options.poolSize%2 == 1) return false;
         if(this.stage.options.numberOfWinners <= 0) return false;
