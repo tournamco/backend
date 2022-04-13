@@ -155,9 +155,7 @@ class TeamManager {
 
 		teams.push(...await (await this.collection.find({"leader": user.id})).toArray());
 
-
-
-		return teams.filter((value, i, self) => self.findIndex(team => team.id === value) === i).map(team => new TeamModel(team));
+		return teams.filter((value, i, self) => self.indexOf(team => team.id === value.id) === i).map(team => new TeamModel(team));
 	}
 }
 
