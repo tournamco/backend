@@ -143,6 +143,12 @@ class TournamentManager {
         return this.collection.findOne(data);
     }
 
+    async getOrganizingTournaments(user) {
+        const tournaments = await (await this.collection.find({"orgainizer": user.id})).toArray();
+
+        return tournaments.map(tournament => new TournamentModel(tournament));
+    }
+
     async getClosest(location, radius) {
         const tournamentsData = await (await this.collection.aggregate({location: {$geoNear: {near: {type: "Point", coordinates: location}, maxDistance: radius}}})).toArray();
 

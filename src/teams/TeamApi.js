@@ -329,22 +329,21 @@ class TeamApi {
 		const teams = await this.teams.getUserTeams(user);
 		let tournaments = [];
 
-		console.log(teams);
-
-		for(const team of teams) {
-			const tournament = await this.tournaments.getModel({id: team.tournament});
-
+		for(const tournament of await this.tournaments.getOrganizingTournaments(user)) {
 			if(tournament.stages[tournament.stages.length - 1].winners.length > 0) continue;
 
 			tournaments.push(await tournament.toPublicObject(this.users));
 		}
 
-		console.log(tournaments, pageNumber, pageSize);
+		for(const team of teams) {
+			const tournament = await this.tournaments.getModel({id: team.tournament});
+
+			if(tournament.stages[tournament.stages.length - 1].winners.length > 0 || tournaments.find(tourn => tourn.id = tournament.id) != null) continue;
+
+			tournaments.push(await tournament.toPublicObject(this.users));
+		}
 
 		tournaments = Helpers.pageArray(tournaments, pageNumber, pageSize);
-
-		
-		console.log(tournaments.length, pageNumber, pageSize);
 
 		res.send({code: 200, tournaments}, 200);
 	}

@@ -22,8 +22,8 @@ class DisputeManager {
 		return this.collection.findOne(data);
 	}
 
-	getAll(data) {
-		return this.collection.findMany(data);
+	async getAll(data) {
+		return await (await this.collection.find(data)).toArray();
 	}
 
 	remove(data) {
