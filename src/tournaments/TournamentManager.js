@@ -71,8 +71,7 @@ class TournamentManager {
 
         await this.checkIfTeamIsStageWinner(tournament, match);*/
 
-        if(await stage.isFinished(tournament, this.matches)) {
-
+        if(await stage.isFinished(this.matches)) {
             await this.stageFinished(tournament);
         }
     }
