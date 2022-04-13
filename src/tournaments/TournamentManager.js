@@ -150,7 +150,8 @@ class TournamentManager {
     }
 
     async getClosest(location, radius) {
-        const tournamentsData = await (await this.collection.find({online: false, location: {$near: {$geometry: {type: "Point", coordinates: location}, $maxDistance: radius}}})).toArray();
+        console.log("LOC", location, radius);
+        const tournamentsData = await (await this.collection.find({online: false, location: {$near: {$geometry: {type: "Point", coordinates: location}, $minDistance: 0, $maxDistance: radius}}})).toArray();
 
         return tournamentsData.map(tournament => new TournamentModel(tournament));
     }
