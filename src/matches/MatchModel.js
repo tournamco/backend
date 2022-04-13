@@ -96,6 +96,7 @@ class MatchModel {
 			scores: match.scores,
 			teams: teamsData,
 			keys: match.keys,
+			finished: this.finished,
 			games: this.games.map(game => game.toPublicObject())
 		}
 	}
