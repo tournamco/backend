@@ -559,7 +559,7 @@ class TeamApi {
 			teamsData[key] = {id: team.id, name: team.name};
 		}
 		
-		res.send({code: 200, match: match.toPublicObject(this.users, tournament, teamsData, this.users)}, 200);
+		res.send({code: 200, match: match.toPublicObject(match, this.users, tournament, teamsData, this.users)}, 200);
 	}
 }
 
