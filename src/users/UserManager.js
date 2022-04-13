@@ -22,9 +22,9 @@ class UserManager {
 	 * @param {String} email 
 	 * @param {String} gamertag 
 	 */
-	async create({username, password, email, gamertag}) {
+	async create({username, password, email, gamertag, icon}) {
 		const id = nanoid(16);
-		const user = new UserModel({id, username, password, email, gamertag, icon: undefined});
+		const user = new UserModel({id, username, password, email, gamertag, icon});
 
 		await this.collection.insertOne(user.toDocument());
 

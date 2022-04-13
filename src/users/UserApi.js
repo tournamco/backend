@@ -44,7 +44,8 @@ class UserApi {
 			username: data.username,
 			gamertag: data.gamertag,
 			password: this.users.hashPassword(data.password),
-			email: data.email
+			email: data.email,
+			icon: data.icon
 		}).catch(e => {throw e});
 
 		logger.debug(`A user was created with id ${id} and email ${data.email}.`);
