@@ -36,6 +36,10 @@ class TeamModel {
 
 		const leader = await userManager.getModel({id: this.leader})
 
+		if(leader == undefined) {
+			console.log("NO LEADER", this.leader, this.id);
+		}
+
 		return {
 			id: this.id,
 			name: this.name,
