@@ -301,7 +301,7 @@ class TeamApi {
 		}
 
 		if(data.personal) {
-			matches.filter(match => match.teams.find(team => teams.find(myTeams => myTeams.id == team.id) != null) != null);
+			matches.filter(match => Object.values(match.teams).filter(team => team != null).find(team => teams.find(myTeams => myTeams.id == team.id) != null) != null);
 		}
 
 		matches = Helpers.pageArray(matches, pageNumber, pageSize);
