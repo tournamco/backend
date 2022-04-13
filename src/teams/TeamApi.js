@@ -166,7 +166,7 @@ class TeamApi {
 		await this.teams.addMember(team.id, user.id);
 		await this.teams.invites.drop(data.token);
 
-		if(team.leader === undefined) {
+		if(team.leader == undefined) {
 			await this.teams.setLeader(team.id, user.id);
 			return res.send({code: 200, id: team.id, leader: true}, 200);
 		}

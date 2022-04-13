@@ -42,7 +42,7 @@ class ImageApi {
 
 		const image = await this.images.get({id: data.id});
 
-		if(image === undefined) {
+		if(image == undefined) {
 			return res.send(ApiErrors.NOT_FOUND);
 		}
 
