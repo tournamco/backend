@@ -29,7 +29,7 @@ class SingleEliminationStageBehaviour extends AbstractStageBehaviour {
 		return this.stage.options.bestOf * this.stage.tournament.gameLength;
 	}
 
-	generateRounds(matchManager) {
+	async generateRounds(matchManager) {
 		let rounds = [];
 		let remainder = [];
 		let i = 0;
@@ -52,7 +52,8 @@ class SingleEliminationStageBehaviour extends AbstractStageBehaviour {
 				const winnerKey = nanoid(8);
 				newRemainder.push(winnerKey);
 
-				const match = matchManager.create({name: `Match ${j/2+1}`, keys: [remainder[j], remainder[j+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, undefined]}, this.stage.options.bestOf);
+				const match = await matchManager.create({name: `Match ${j/2+1}`, keys: [remainder[j], remainder[j+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, undefined]}, this.stage.options.bestOf);
+
 				round.addMatch(match);
 			}
 

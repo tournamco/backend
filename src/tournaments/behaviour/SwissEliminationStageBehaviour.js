@@ -37,7 +37,7 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 		return this.stage.options.bestOf * this.stage.tournament.gameLength;
 	}
 
-	generateRounds(matchManager) {
+	async generateRounds(matchManager) {
 		let rounds = [];
 		let wins = [];
 		let k = 0;
@@ -57,7 +57,7 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 				for(let l = 0; l < winsKeys.length; l+=2) {
 					const winnerKey = nanoid(8);
 					const loserKey = nanoid(8);
-					const match = matchManager.create({name: `Match ${j+1}`, keys: [wins[j][i], wins[j][i+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, this.stage.options.bestOf);
+					const match = await matchManager.create({name: `Match ${j+1}`, keys: [wins[j][i], wins[j][i+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, this.stage.options.bestOf);
 					round.addMatch(match);
 					newWins[j+1].push(winnerKey);
 					newWins[j].push(loserKey);
@@ -83,7 +83,7 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 				for(let l = 0; l < winsKeys.length; l+=2) {
 					const winnerKey = nanoid(8);
 					const loserKey = nanoid(8);
-					const match = matchManager.create({name: `Match ${j+1}`, keys: [wins[j][i], wins[j][i+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, this.stage.options.bestOf);
+					const match = await matchManager.create({name: `Match ${j+1}`, keys: [wins[j][i], wins[j][i+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, this.stage.options.bestOf);
 					round.addMatch(match);
 					newWins[j+1].push(winnerKey);
 					newWins[j].push(loserKey);

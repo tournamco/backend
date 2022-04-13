@@ -29,6 +29,7 @@ class MatchManager {
 			teams[key] = undefined;
 			finished[key] = false;
 		});
+		
 		const match = new MatchModel({id, name, startDate, endDate, keys, newKeys, games, finished, teams, tournament});
 
 		await this.collection.insertOne(match.toDocument());
