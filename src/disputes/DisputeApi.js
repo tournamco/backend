@@ -9,7 +9,7 @@ class DisputeApi {
 		this.disputes = disputes;
 
 		router.post("/dispute/resolve", (req, res) => this.resolve(req, res));
-		router.get("/dispute/list", (req, res) => this.list(req, res));
+		router.post("/dispute/list", (req, res) => this.list(req, res));
 	}
 
 	async resolve(req, res) {
