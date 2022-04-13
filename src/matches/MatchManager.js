@@ -109,8 +109,13 @@ class MatchManager {
 			const game = match.games[i];
 
 			if(await game.areScoresUndisputed(this.proofs)) {
-				console.log("proof", await game.getSetProofs(this.proofs));
-				await this.setGameScores(match.id, i, (await game.getSetProofs(this.proofs))[0].scores);
+				const proofsData = await game.getSetProofs(this.proofs);
+
+				if(proofsData.length == 0) {
+					continue;
+				}
+				
+				await this.setGameScores(match.id, i, proofsData[0].scores);
 			}
 			else {
 				await this.disputes.create({match: id, tournament: match.tournament, game: i});
