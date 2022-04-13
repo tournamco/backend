@@ -526,8 +526,8 @@ class TeamApi {
 
 		const tournament = await this.tournaments.getModel({id: match.tournament});
 		const teams = await this.tournaments.getAllTeams(tournament.id);
-		
-		res.send({code: 200, match: match.toPublicObject(match, this.users, tournament, teams, this.users)}, 200);
+
+		res.send({code: 200, match: match.toPublicObject(match, tournament, teams, this.users)}, 200);
 	}
 }
 
