@@ -151,7 +151,7 @@ class TournamentManager {
 
     async getClosest(location, radius) {
         console.log("LOC", location, radius);
-        this.collection.find({location: {$nearSphere: {$geometry: {type: "Point", coordinates: location}, $minDistance: 0, $maxDistance: radius}}}).forEach(item => console.log(item));
+        console.log(await (this.collection.find({location: {$nearSphere: {$geometry: {type: "Point", coordinates: location}, $minDistance: 0, $maxDistance: radius}}})).toArray());
 
         const tournamentsData = await (await this.collection.find({location: {$nearSphere: {$geometry: {type: "Point", coordinates: location}, $minDistance: 0, $maxDistance: radius}}})).toArray();
 
