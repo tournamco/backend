@@ -548,10 +548,10 @@ class TeamApi {
 			let team;
 
 			if(match.teams != undefined && match.teams[key] != undefined) {
-				team = teams.find(team => team.id === match.teams[key]);
+				team = await this.teams.get({id: match.teams[key]});
 			}
 			else {
-				team = teams.find(team => team.key === key);
+				team = await this.teams.get({key});
 			}
 
 			if(team == undefined) continue;
