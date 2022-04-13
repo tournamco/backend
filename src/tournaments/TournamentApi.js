@@ -299,16 +299,12 @@ class TournamentApi {
 			}
 		}
 		
-		let tournaments = this.tournaments.getClosest([longitude, latitute], parseFloat(data.distance));
+		let tournaments = await this.tournaments.getClosest([longitude, latitute], parseFloat(data.distance));
 
 		const pageNumber = data.pageNumber != undefined ? data.pageNumber : 0;
 		const pageSize = data.pageSize != undefined ? data.pageSize : 10;
 
-		console.log(tournaments.length);
-
 		tournaments = Helpers.pageArray(tournaments, pageNumber, pageSize);
-		
-		console.log(tournaments.length);
 
 		res.send({code: 200, tournaments: await Promise.all(tournaments.map(async tournament => await tournament.toPublicObject(this.users)))}, 200);
 	}
