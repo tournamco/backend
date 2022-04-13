@@ -150,7 +150,7 @@ class TournamentManager {
     }
 
     async getClosest(location, radius) {
-        const tournamentsData = await (await this.collection.aggregate([{$geoNear: {near: {type: "Point", coordinates: location}, maxDistance: radius, distanceField: "dist.calculated"}}])).toArray();
+        const tournamentsData = await (await this.collection.find({location: {$near: {$geometry: {type: "Point", coordinates: location}, $maxDistance: radius}}})).toArray();
 
         return tournamentsData.map(tournament => new TournamentModel(tournament));
     }
