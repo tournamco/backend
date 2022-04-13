@@ -151,7 +151,9 @@ class TeamManager {
 	}
 
 	async getUserTeams(user) {
-		const teams = await (await this.collection.find({"members": {"$in": [user.id]}})).toArray();
+		let teams = await (await this.collection.find({"members": {"$in": [user.id]}})).toArray();
+
+		teams.push(...await (await this.collection.find({"leader": user.id})).toArray());
 
 		return teams.map(team => new TeamModel(team));
 	}

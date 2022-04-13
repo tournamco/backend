@@ -300,6 +300,10 @@ class TeamApi {
 			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate < b.startDate ? 1 : -1);
 		}
 
+		if(data.personal) {
+			matches.filter(match => match.teams.find(team => teams.find(myTeams => myTeams.id == team.id) != null) != null);
+		}
+
 		matches = Helpers.pageArray(matches, pageNumber, pageSize);
 
 		const matchesData = [];
