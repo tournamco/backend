@@ -49,6 +49,8 @@ class TeamApi {
 			return res.send(ApiErrors.UNAUTHORIZED);
 		}
 
+		console.log(data, user.id, tournament.organizer);
+
 		if(user.id === tournament.organizer && !data.join) {
 			await this.createEmptyTeam(data, res, tournament);
 		}
