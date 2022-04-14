@@ -40,7 +40,7 @@ class TournamentModel {
 	}
 
 	removeTeam(teamId) {
-		this.teams = this.teams.filter(team => team.id !== teamId);
+		this.teams = this.teams.filter(team => team !== teamId);
 	}
 
 	addFreeKey(key) {
