@@ -147,12 +147,21 @@ const errors = {
 		message: "There occured an unexpected error on the server.",
 		errno: index++
 	},
+
+	/* More errors */
 	INVALID_FIELD: {
 		code: 400,
 		reason: "Bad Request",
 		message: "The given field is invalid.",
 		errno: index++
 	},
+	ALREADY_PLAYING: {
+		code: 400,
+		reason: "Bad Request",
+		message: "The team is already playing.",
+		errno: index++
+	},
+
 
 	findByErrno: errno => {
 		for(const error of errors) {

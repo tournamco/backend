@@ -20,6 +20,7 @@ class TeamApi {
 		router.post("/team/leave", (req, res) => this.leave(req, res));
 		router.post("/team/list", (req, res) => this.list(req, res));
 		router.post("/team/change", (req, res) => this.change(req, res));
+		router.post("/team/delete", (req, res) => this.delete(req, res));
 		router.post("/team/match/info", (req, res) => this.matchInfo(req, res));
 	}
 
@@ -401,8 +402,8 @@ class TeamApi {
 			return res.send(ApiErrors.NOT_FOUND);
 		}
 
-		if(team.members.indexOf(user.id) == -1) {
-			return res.send(ApiErrors.NOT_AUTHORIZED);
+		if(team.members.indexOf(user.id) == -1 && user.id != team.leader) {
+			return res.send(ApiErrors.UNAUTHORIZED);
 		}
 
 		await this.teams.removeMember(team.id, user.id);
@@ -532,6 +533,48 @@ class TeamApi {
 		const tournament = await this.tournaments.getModel({id: match.tournament});
 
 		res.send({code: 200, match: await match.toPublicObject(match, tournament, this.teams, this.users)}, 200);
+	}
+
+	async delete(req, res) {
+		const data = await req.data;
+		const user = await this.users.getFromSession(req).catch(e=>{throw e});
+
+		if(user === undefined) {
+			return res.send(ApiErrors.NOT_LOGGED_IN);
+		}
+
+		if(data.id == undefined || data.id == "") {
+			return res.send(ApiErrors.MISSING("id"));
+		}
+
+		const team = await this.teams.getModel({id: data.id});
+
+		if(team == undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		const tournament = await this.tournaments.getModel({id: team.tournament});
+
+		if(tournament == undefined) {
+			return res.send(ApiErrors.NOT_FOUND);
+		}
+
+		if(team.leader != user.id && tournament.organizer != user.id) {
+			return res.send(ApiErrors.UNAUTHORIZED);
+		}
+
+		const matches = await this.matches.getAll({tournament: tournament.id});
+
+		for(const match of matches) {
+			if(Object.values(match.teams).indexOf(team.id) > -1) {
+				return res.send(ApiErrors.ALREADY_PLAYING);				
+			}
+		}
+
+		await this.tournaments.deleteTeam(team);
+		await this.teams.delete({id: team.id});
+
+		res.send({code: 200}, 200);
 	}
 }
 

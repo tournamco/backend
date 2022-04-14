@@ -38,7 +38,9 @@ class TeamManager {
 	}
 
 	async setLeader(id, user) {
-		const team = this.getModel({id});
+		const team = await this.getModel({id});
+
+		if(team === undefined) return;
 
 		team.setLeader(user);
 
@@ -46,7 +48,7 @@ class TeamManager {
 	}
 
 	async removeMember(id, member) {
-		const team = this.getModel({id});
+		const team = await this.getModel({id});
 
 		if(team.members.length === team.teamSize) return;
 
@@ -56,7 +58,7 @@ class TeamManager {
 	}
 
 	async changeName(id, name) {
-		const team = this.getModel({id});
+		const team = await this.getModel({id});
 
 		team.name = name;
 
@@ -147,7 +149,7 @@ class TeamManager {
 	}
 
 	delete(data) {
-		return this.collection.deleteMany(data);
+		return this.collection.deleteOne(data);
 	}
 
 	async getUserTeams(user) {

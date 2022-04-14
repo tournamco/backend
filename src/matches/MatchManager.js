@@ -139,6 +139,10 @@ class MatchManager {
 		return this.collection.findOne(data);
 	}
 
+	getAll(data) {
+		return await this.collection.find(data).toArray();
+	}
+
 	async getModel(data) {
 		const contents = await this.get(data);
 

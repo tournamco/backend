@@ -183,6 +183,17 @@ class TournamentManager {
         return teams;
     }
 
+    async deleteTeam(team) {
+        const tournament = await this.getModel({id: team.tournament});
+
+        if(tournament == undefined) return;
+
+        tournament.removeTeam(team.id);
+        tournament.addFreeKey(team.key);
+
+        await this.collection.replaceOne({id: tournament.id}, tournament.toDocument());
+    }
+
     getTeamManager() {
         return this.teams;
     }

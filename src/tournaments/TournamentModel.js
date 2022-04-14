@@ -39,6 +39,14 @@ class TournamentModel {
 		return this.stages[this.currentStage].freeKeys.shift();
 	}
 
+	removeTeam(teamId) {
+		this.teams = this.teams.filter(team => team.id !== teamId);
+	}
+
+	addFreeKey(key) {
+		this.stages[this.currentStage].freeKeys.push(key);
+	}
+
 	getAllMatches() {
 		const matches = [];
 
