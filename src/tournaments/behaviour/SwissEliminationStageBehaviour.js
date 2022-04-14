@@ -100,8 +100,11 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 
 		return rounds;
 	};
+
 	isValid() {
         if(this.stage.options.bestOf <= 0) return false;
+
+		return true;
 	};
 }
 

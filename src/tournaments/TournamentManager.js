@@ -36,11 +36,7 @@ class TournamentManager {
                 winners: []
             }, tournament);
 
-            if(!stage.isValid()) {
-                console.log("STAGE NOT VALID", stage);
-
-                return undefined;
-            }
+            if(!stage.isValid()) return undefined;
 
             tournament.addStage(stage);
 
