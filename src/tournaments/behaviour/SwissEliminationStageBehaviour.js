@@ -42,7 +42,7 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 		let wins = [];
 		let k = 0;
 
-		wins[0] = Array.fill(Math.pow(2, this.stage.numberOfWins + 1)).map(() => {
+		wins[0] = Array(Math.pow(2, this.stage.numberOfWins + 1)).fill(1).map(() => {
 			const id = nanoid(8)
 			this.stage.freeKeys.push(id);
 			return id;
