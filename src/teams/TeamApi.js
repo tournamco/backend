@@ -78,7 +78,7 @@ class TeamApi {
 		await this.teams.setKey(team.id, key);
 		const invite = await this.teams.invites.create({team: team.id});
 
-		logger.debug(`An empty team was created with id ${team.id} for the tournament ${tournament.id}.`);
+		logger.info(`An empty team was created with id ${team.id} for the tournament ${tournament.id}.`);
 
 		res.send({code: 200, id: team.id, token: invite}, 200);
 	}
@@ -124,7 +124,7 @@ class TeamApi {
 		
 		await this.teams.setKey(team.id, key);
 
-		logger.debug(`A team was created with id ${team.id} for the tournament ${tournament.id}.`);
+		logger.info(`A team was created with id ${team.id} for the tournament ${tournament.id}.`);
 
 		res.send({code: 200, id: team.id}, 200);
 	}
@@ -170,12 +170,12 @@ class TeamApi {
 		if(team.leader == undefined) {
 			await this.teams.setLeader(team.id, user.id);
 
-			logger.debug(`The user ${user.id} joined the team ${team.id} and became leader.`);
+			logger.info(`The user ${user.id} joined the team ${team.id} and became leader.`);
 
 			return res.send({code: 200, id: team.id, leader: true}, 200);
 		}
 
-		logger.debug(`A user ${user.id} joined the team ${team.id}.`);
+		logger.info(`A user ${user.id} joined the team ${team.id}.`);
 
 		res.send({code: 200, id: team.id, leader: user.id === team.leader}, 200);
 	}
@@ -217,7 +217,7 @@ class TeamApi {
 			maxAge: data.maxAge
 		});
 
-		logger.debug(`A team invite was created for the team ${team.id} in the tournament ${tournament.id}.`);
+		logger.info(`A team invite was created for the team ${team.id} in the tournament ${tournament.id}.`);
 
 		res.send({code: 200, token}, 200);
 	}
@@ -263,7 +263,7 @@ class TeamApi {
 
 		match = await this.matches.getModel({id: match.id});
 
-		logger.debug(`The match ${match.id} was finished for the team ${team.id} in the tournament ${team.tournament}.`);
+		logger.info(`The match ${match.id} was finished for the team ${team.id} in the tournament ${team.tournament}.`);
 
 		if(!match.isFinished() || match.isDecided()) {
 			return res.send({code: 200}, 200);
@@ -272,7 +272,7 @@ class TeamApi {
 		await this.matches.decide(match.id, team.tournament);
 		await this.tournaments.matchFinished(team.tournament, match);
 
-		logger.debug(`The match ${match.id} was finished in the tournament ${team.tournament}.`);
+		logger.info(`The match ${match.id} was finished in the tournament ${team.tournament}.`);
 
 		res.send({code: 200}, 200);
 	}

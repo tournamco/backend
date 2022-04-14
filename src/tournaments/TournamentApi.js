@@ -109,7 +109,7 @@ class TournamentApi {
 			return res.send(ApiErrors.INCORRECT_OPTION_VALUES);
 		}
 
-		logger.debug(`A tournament was created with id ${tournament.id}.`);
+		logger.info(`A tournament was created with id ${tournament.id}.`);
 
 		res.send({code: 200, id: tournament.id}, 200);
 	}
@@ -138,7 +138,7 @@ class TournamentApi {
 
 		await this.tournaments.deleteById(tournament.id);
 
-		logger.debug(`A tournament was deleted with id ${tournament.id}.`);
+		logger.info(`A tournament was deleted with id ${tournament.id}.`);
 
 		res.send({code: 200}, 200);
 	}

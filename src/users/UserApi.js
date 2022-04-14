@@ -48,7 +48,7 @@ class UserApi {
 			icon: data.icon
 		}).catch(e => {throw e});
 
-		logger.debug(`A user was created with id ${id} and email ${data.email}.`);
+		logger.info(`A user was created with id ${id} and email ${data.email}.`);
 
 		res.send({code: 200, id}, 200);
 	}
@@ -72,7 +72,7 @@ class UserApi {
 		const id = await this.users.getIdFromUsername(data.username).catch(e=>{throw e});
 		await this.users.sessions.createSession(res, id).catch(e=>{throw e});
 
-		logger.debug(`The user with id ${id} logged in.`);
+		logger.info(`The user with id ${id} logged in.`);
 
 		res.send({code: 200, id}, 200);
 	}
@@ -92,7 +92,7 @@ class UserApi {
 
 		this.users.sessions.clearSession(res, token);
 
-		logger.debug(`The user with id ${user.id} logged out.`);
+		logger.info(`The user with id ${user.id} logged out.`);
 
 		res.send({code: 200}, 200);
 	}
@@ -133,7 +133,7 @@ class UserApi {
 				}
 
 				await this.users.changeUsername(user.id, data.value).catch(e=>{throw e});
-				logger.debug(`The user with id ${user.id} changed their username to ${data.value}.`);
+				logger.info(`The user with id ${user.id} changed their username to ${data.value}.`);
 				break;
 			case "email":
 				if(await this.users.emailExists(data.value).catch(e=>{throw e})) {
@@ -141,15 +141,15 @@ class UserApi {
 				}
 
 				await this.users.changeEmail(user.id, data.value).catch(e=>{throw e});
-				logger.debug(`The user with id ${user.id} changed their email to ${data.value}.`);
+				logger.info(`The user with id ${user.id} changed their email to ${data.value}.`);
 				break;
 			case "gamertag":
 				await this.users.changeGamertag(user.id, data.value).catch(e=>{throw e});
-				logger.debug(`The user with id ${user.id} changed their gamertag to ${data.value}.`);
+				logger.info(`The user with id ${user.id} changed their gamertag to ${data.value}.`);
 				break;
 			case "icon":
 				await this.users.changeIcon(user.id, data.value).catch(e=>{throw e});
-				logger.debug(`The user with id ${user.id} changed their icon to ${data.value}.`);
+				logger.info(`The user with id ${user.id} changed their icon to ${data.value}.`);
 				break;
 			default:
 				return res.send(ApiErrors.INVALID_FIELD);
@@ -180,7 +180,7 @@ class UserApi {
 
 		await this.users.changePassword(user.id, this.users.hashPassword(data.newPassword)).catch(e=>{throw e});
 
-		logger.debug(`The user with id ${user.id} changed their password.`);
+		logger.info(`The user with id ${user.id} changed their password.`);
 
 		res.send({code: 200}, 200);
 	}
