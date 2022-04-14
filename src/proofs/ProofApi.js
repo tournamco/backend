@@ -1,3 +1,4 @@
+const logger = require("../logging/Logger");
 const ApiErrors = require("../net/server/UserApiErrors");
 
 class ProofApi {
@@ -71,6 +72,8 @@ class ProofApi {
 		if(!success) {
 			return res.send(ApiErrors.INTERNAL_SERVER_ERROR);
 		}
+
+		logger.info(`Proof ${proof.id} created for match ${match.id}`);
 
 		res.send({code: 200, id: proof.id}, 200);
 	}
@@ -204,6 +207,8 @@ class ProofApi {
 		if(!success) {
 			return res.send(ApiErrors.INCORRECT_SCORES);
 		}
+
+		logger.info(`Proof ${proof.id} scores set for match ${match.id}`);
 
 		res.send({code: 200}, 200);
 	}

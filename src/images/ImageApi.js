@@ -12,12 +12,6 @@ class ImageApi {
 	}
 
 	async upload(req, res) {
-		const user = await this.users.getFromSession(req).catch(e=>{throw e});
-
-		//if(user === undefined) {
-		//	return res.send(ApiErrors.NOT_LOGGED_IN);
-		//}
-
 		const extension = mime.extension(req.header("content-type"));
 
 		if(extension !== "jpeg" && extension !== "png") {
@@ -29,7 +23,7 @@ class ImageApi {
 			extension
 		});
 
-		logger.info("Saving new image: " + id);
+		logger.info(`Saving new image ${id}`);
 
 		await this.images.save(id, extension, req.incomingMessage);
 

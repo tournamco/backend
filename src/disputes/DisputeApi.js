@@ -1,3 +1,4 @@
+const logger = require("../logging/Logger");
 const ApiErrors = require("../net/server/UserApiErrors");
 
 class DisputeApi {
@@ -54,10 +55,10 @@ class DisputeApi {
 		const proof = await this.proofs.getModel({id: game.proofs[data.key]});
 		
 		await this.matches.setGameScores(match.id, dispute.game, proof.scores);
-
 		await this.disputes.remove({id: dispute.id});
-
 		await this.tournaments.matchFinished(tournament.id, match);
+
+		logger.info(`Dispute ${dispute.id} resolved for match ${match.id}, game ${dispute.game}`);
 
 		res.send({code: 200}, 200);
 	}

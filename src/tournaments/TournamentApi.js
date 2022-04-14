@@ -138,6 +138,8 @@ class TournamentApi {
 
 		await this.tournaments.deleteById(tournament.id);
 
+		logger.debug(`A tournament was deleted with id ${tournament.id}.`);
+
 		res.send({code: 200}, 200);
 	}
 
