@@ -406,7 +406,16 @@ class TeamApi {
 			return res.send(ApiErrors.UNAUTHORIZED);
 		}
 
-		await this.teams.removeMember(team.id, user.id);
+		let userId;
+
+		if(user.id == team.leader && data.user != undefined) {
+			userId = data.user;
+		}
+		else {
+			userId = user.id;
+		}
+
+		await this.teams.removeMember(team.id, userId);
 
 		res.send({code: 200}, 200);
 	}
