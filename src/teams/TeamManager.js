@@ -149,7 +149,7 @@ class TeamManager {
 	}
 
 	delete(data) {
-		return this.collection.deleteOne(data);
+		return this.collection.deleteMany(data);
 	}
 
 	async getUserTeams(user) {
