@@ -140,7 +140,7 @@ class MatchManager {
 	}
 
 	getAll(data) {
-		return await this.collection.find(data).toArray();
+		return this.collection.find(data).toArray();
 	}
 
 	async getModel(data) {
