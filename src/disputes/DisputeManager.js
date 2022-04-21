@@ -13,7 +13,13 @@ class DisputeManager {
 	async create({match, game, tournament}) {
 		const id = nanoid(16);
 
-		await this.collection.insertOne({id, match, game, tournament, createdAt: new Date().getTime()});
+		await this.collection.insertOne({
+			id, 
+			match, 
+			game, 
+			tournament, 
+			createdAt: new Date().getTime()
+		});
 
 		return id;
 	}

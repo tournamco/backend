@@ -49,7 +49,11 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 		});
 
 		for(let i = 0; i < this.stage.options.numberOfWins; i++) {
-			const round = new RoundModel({id: nanoid(16), name: `Round ${k+1}`, matches: []}, this.stage);
+			const round = new RoundModel({
+				id: nanoid(16), 
+				name: `Round ${k+1}`, 
+				matches: []
+			}, this.stage);
 			let newWins = [];
 
 			for(let j = 0; j < wins.length; j++) {
@@ -60,7 +64,12 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 				for(let l = 0; l < winsKeys.length; l+=2) {
 					const winnerKey = nanoid(8);
 					const loserKey = nanoid(8);
-					const match = await matchManager.create({name: `Match ${j+1}`, keys: [wins[j][i], wins[j][i+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, this.stage.options.bestOf);
+					const match = await matchManager.create({
+						name: `Match ${j+1}`, 
+						keys: [wins[j][i], wins[j][i+1]], 
+						tournament: this.stage.tournament.id, 
+						newkeys: [winnerKey, loserKey]
+					}, this.stage.options.bestOf);
 					round.addMatch(match);
 					newWins[j+1].push(winnerKey);
 					newWins[j].push(loserKey);
@@ -73,7 +82,11 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 		}
 
 		for(let i = 0; i < this.options.stage.numberOfWins-1; i++) {
-			const round = new RoundModel({id: nanoid(16), name: `Round ${k+1}`, matches: []}, this.stage);
+			const round = new RoundModel({
+				id: nanoid(16), 
+				name: `Round ${k+1}`, 
+				matches: []
+			}, this.stage);
 			let newWins = [];
 			newWins[0] = wins[0];
 			newWins[wins.length-1] = wins[wins.length-1];
@@ -86,7 +99,12 @@ class SwissEliminationStageBehaviour extends AbstractStageBehaviour {
 				for(let l = 0; l < winsKeys.length; l+=2) {
 					const winnerKey = nanoid(8);
 					const loserKey = nanoid(8);
-					const match = await matchManager.create({name: `Match ${j+1}`, keys: [wins[j][i], wins[j][i+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, this.stage.options.bestOf);
+					const match = await matchManager.create({
+						name: `Match ${j+1}`, 
+						keys: [wins[j][i], wins[j][i+1]], 
+						tournament: this.stage.tournament.id, 
+						newkeys: [winnerKey, loserKey]
+					}, this.stage.options.bestOf);
 					round.addMatch(match);
 					newWins[j+1].push(winnerKey);
 					newWins[j].push(loserKey);

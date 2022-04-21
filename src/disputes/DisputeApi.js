@@ -1,7 +1,24 @@
 const logger = require("../logging/Logger");
 const ApiErrors = require("../net/server/UserApiErrors");
+const Router = require("../net/server/Router");
+const TournamentManager = require('../tournaments/TournamentManager');
+const ProofManager = require('../proofs/ProofManager');
+const MatchManager = require('../matches/MatchManager');
+const DisputesManager = require('../disputes/DisputesManager');
 
+/**
+ * This class contains the API handlers for the disputes.
+ */
 class DisputeApi {
+	/**
+	 * Constructor for the dispute api, it will register the api handlers.
+	 * @param {Router} router The router to attach the api to.
+	 * @param {TournamentManager} tournaments The tournaments manager.
+	 * @param {UserManager} users The user manager.
+	 * @param {ProofManager} proofs The proofs manager.
+	 * @param {MatchManager} matches  The matches manager.
+	 * @param {DisputesManager} disputes The disputes manager.
+	 */
 	constructor(router, tournaments, users, proofs, matches, disputes) {
 		this.proofs = proofs;
 		this.tournaments = tournaments;
@@ -13,6 +30,12 @@ class DisputeApi {
 		router.post("/dispute/list", (req, res) => this.list(req, res));
 	}
 
+	/**
+	 * Resolves a dispute. The user can set the id of the dispute as "dispute" and the key of the team that won with "key".
+	 * @param {JSONHTTPRequest} req The request.
+	 * @param {JSONHTTPResponse} res The response. 
+	 * @returns 
+	 */
 	async resolve(req, res) {
 		const data = await req.data;
 		const user = await this.users.getFromSession(req).catch(e=>{throw e});
@@ -58,7 +81,7 @@ class DisputeApi {
 		await this.disputes.remove({id: dispute.id});
 		await this.tournaments.matchFinished(tournament.id, match);
 
-		logger.info(`Dispute ${dispute.id} resolved for match ${match.id}, game ${dispute.game}`);
+		logger.info(`Dispute resolved for match ${match.id} with id ${dispute.id} by ${user.id}`);
 
 		res.send({code: 200}, 200);
 	}

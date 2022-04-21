@@ -1,5 +1,6 @@
 const logger = require("../logging/Logger");
 const ApiErrors = require("../net/server/UserApiErrors");
+const logger = require('../logging/Logger');
 
 class ProofApi {
 	constructor(router, matches, users, teams, proofs) {
@@ -73,7 +74,7 @@ class ProofApi {
 			return res.send(ApiErrors.INTERNAL_SERVER_ERROR);
 		}
 
-		logger.info(`Proof ${proof.id} created for match ${match.id}`);
+		logger.info(`Proof ${proof.id} created for match ${match.id} by ${user.id}`);
 
 		res.send({code: 200, id: proof.id}, 200);
 	}
@@ -121,6 +122,8 @@ class ProofApi {
 
 		await this.proofs.addImage(data.proof, data.image);
 
+		logger.info(`Image ${data.image} added to proof ${data.proof} for match ${match.id} by ${user.id}`);
+
 		res.send({code: 200}, 200);
 	}
 
@@ -157,6 +160,8 @@ class ProofApi {
 		}
 
 		await this.proofs.removeImage(proof, data.image);
+
+		logger.info(`Image ${data.image} removed from proof ${proof.id} for match ${proof.match} by ${user.id}`);
 
 		res.send({code: 200}, 200);
 	}

@@ -65,7 +65,7 @@ class UserApi {
 			return res.send(ApiErrors.NOT_WHEN_LOGGED_IN);
 		}
 
-		if(!(await this.users.checkPasswordByUsername(data.username, data.password).catch(e=>{throw e}))) {
+		if(!(await this.users.checkPasswordByUsername(data.username, data.password))) {
 			return res.send(ApiErrors.INCORRECT_EMAIL_PASSWORD);
 		}
 

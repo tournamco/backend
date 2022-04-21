@@ -113,6 +113,8 @@ class TournamentManager {
         const key = tournament.getFreeKey();
 
         await this.collection.replaceOne({id: tournament.id}, tournament.toDocument());
+
+        return key;
     }
 
     async addTeam(id, team) {

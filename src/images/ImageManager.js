@@ -16,8 +16,12 @@ class ImageManager {
 		await this.ensureFolder();
 	}
 
+	async isDirectory(path) {
+		return fs.existsSync(path) && (await fs.promises.stat(path)).isDirectory();
+	}
+
 	async ensureFolder() {
-		if(fs.existsSync(this.folder) && (await fs.promises.stat(this.folder)).isDirectory()) return;
+		if(this.isDirectory(this.folder)) return;
 		
 		await fs.promises.mkdir(this.folder);
 	}

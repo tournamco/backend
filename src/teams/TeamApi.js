@@ -302,11 +302,13 @@ class TeamApi {
 
 		if(data.future) {
 			matches = matches.filter(match => match.endDate >= new Date().getTime());
-			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate > b.startDate ? 1 : -1);
+			matches = matches.sort((a, b) => 
+				a.startDate == b.startDate ? 0 : a.startDate > b.startDate ? 1 : -1);
 		}
 		else {
 			matches = matches.filter(match => match.endDate < new Date().getTime());
-			matches = matches.sort((a, b) => a.startDate == b.startDate ? 0 : a.startDate < b.startDate ? 1 : -1);
+			matches = matches.sort((a, b) => 
+				a.startDate == b.startDate ? 0 : a.startDate < b.startDate ? 1 : -1);
 		}
 
 		if(data.personal) {
@@ -318,7 +320,10 @@ class TeamApi {
 		const matchesData = [];
 
 		for(const match of matches) {
-			matchesData.push(await match.toPublicObject(match, tournaments.find(tournament => tournament.id === match.tournament), this.teams, this.users));
+			matchesData.push(
+				await match.toPublicObject(match, 
+					tournaments.find(tournament => tournament.id === match.tournament), 
+					this.teams, this.users));
 		}
 
 		res.send({code: 200, matches: matchesData}, 200);
@@ -525,8 +530,9 @@ class TeamApi {
 			return res.send(ApiErrors.NOT_FOUND);
 		}
 
-		if(Object.values(match.teams).indexOf(team.id) > -1 || match.keys.indexOf(team.key) == -1) {
-			return res.send(ApiErrors.NOT_AUTHORIZED);
+		if(Object.values(match.teams).indexOf(team.id) > -1 
+			|| match.keys.indexOf(team.key) == -1) {
+			return res.send(ApiErrors.UNAUTHORIZED);
 		}
 
 		await this.matches.setResignLoser(match.id, team.key, this.teams);

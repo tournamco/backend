@@ -4,13 +4,6 @@ const logger = require("../../logging/Logger");
 
 class Router {
     constructor() {
-        // {
-        //   path - Path for this subroute
-        //   instance - Link to subrouter, overrides handler
-        //   method - Which method this route can use
-        //   handler - A function that is called (with JSONHTTPRequest and JSONHTTPResponse as
-        //       parameters) when the route is used by a client
-        // }
         this.stack = [];
     }
 

@@ -6,7 +6,8 @@ class JSONHTTPRequest {
         this.incomingMessage = incomingMessage;
         this.cookies = cookies;
         this.method = incomingMessage.method;
-        this.url = new URL(this.incomingMessage.url, `http://${this.incomingMessage.headers.host}`);
+        this.url = new URL(this.incomingMessage.url, 
+            `http://${this.incomingMessage.headers.host}`);
 
         this.dataObject = undefined;
     }

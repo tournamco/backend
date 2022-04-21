@@ -52,7 +52,12 @@ class SessionManager {
 	async createSession(res, userId, maxAge = this.options.defaultMaxAge) {
 		const token = nanoid(32);
 
-		await this.collection.insertOne({token, maxAge, user: userId, createdAt: new Date().getTime()})
+		await this.collection.insertOne({
+			token, 
+			maxAge, 
+			user: userId, 
+			createdAt: new Date().getTime()
+		});
 
 		res.cookies.set(this.options.cookieName, token, {maxAge, signed: true});
 	}

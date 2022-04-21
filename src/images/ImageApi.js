@@ -27,6 +27,8 @@ class ImageApi {
 
 		await this.images.save(id, extension, req.incomingMessage);
 
+		logger.info(`Image uploaded with id ${id} by ${user.id}`);
+
 		res.send({code: 200, id}, 200);
 	}
 

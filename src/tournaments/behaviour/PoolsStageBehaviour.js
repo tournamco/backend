@@ -36,7 +36,8 @@ class PoolsStageBehaviour extends AbstractStageBehaviour {
                 continue;
             }
 
-            const maxN = values[n - this.stage.options.numberOfWinners < 0 ? 0 : n - this.stage.options.numberOfWinners];
+            const maxN = values[n - this.stage.options.numberOfWinners < 0 
+                ? 0 : n - this.stage.options.numberOfWinners];
                 
             winners.push(...Object.entries(o)
                 .reduce((o, [k, v]) => v >= maxN ? { ...o, [k]: v } : o, {}).map(([k, v]) => k));
@@ -47,7 +48,8 @@ class PoolsStageBehaviour extends AbstractStageBehaviour {
 
 	async generateRounds(matchManager) {
 		let rounds = [];
-        const numberOfPools = Math.ceil(this.stage.numberOfParticipants / this.stage.options.poolSize);
+        const numberOfPools = Math.ceil(this.stage.numberOfParticipants 
+            / this.stage.options.poolSize);
         const pools = [];
         
 
@@ -66,14 +68,22 @@ class PoolsStageBehaviour extends AbstractStageBehaviour {
         this.stage.options.pools = pools;
 
         for(let i = 0; i < this.stage.options.matchesPerPool; i++) {
-            const round = new RoundModel({id: nanoid(16), name: `Round ${i+1}`, matches: []}, this.stage);
+            const round = new RoundModel({
+                id: nanoid(16), 
+                name: `Round ${i+1}`, 
+                matches: []
+            }, this.stage);
             
             for(let j = 0; j < pools.length; j++) {
                 let pool = pools[j];
                 let x = 0;
 
                 for(let l = 0; l < pool.length/2; l++) {
-                    const match = await matchManager.create({name: `Match ${ALPHABET.charAt(j)}${x+1}`, keys: [pool[l], pool[pool.length-l-1]], tournament: this.stage.tournament.id}, this.stage.options.bestOf);
+                    const match = await matchManager.create({
+                        name: `Match ${ALPHABET.charAt(j)}${x+1}`, 
+                        keys: [pool[l], pool[pool.length-l-1]], 
+                        tournament: this.stage.tournament.id
+                    }, this.stage.options.bestOf);
                     round.addMatch(match);
                     x++;
                 }

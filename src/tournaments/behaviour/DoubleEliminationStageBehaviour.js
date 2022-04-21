@@ -52,7 +52,12 @@ class DoubleEliminationStageBehaviour extends AbstractStageBehaviour {
 				newUpperRemainder.push(winnerKey);
 				newLowerRemainder.push(loserKey);
 
-				const match = await matchManager.create({name: `Match U${j+1}`, keys: [upperRemainder[j], upperRemainder[j+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, loserKey]}, this.stage.options.bestOf);
+				const match = matchManager.create({
+					name: `Match U${j+1}`, 
+					keys: [upperRemainder[j], upperRemainder[j+1]], 
+					tournament: this.stage.tournament.id, 
+					newkeys: [winnerKey, loserKey]
+				}, this.stage.options.bestOf);
 				round.addMatch(match);
 			}
 
@@ -66,7 +71,12 @@ class DoubleEliminationStageBehaviour extends AbstractStageBehaviour {
 				const winnerKey = nanoid(8);
 				newLowerRemainder.push(winnerKey);
 
-				const match = await matchManager.create({name: `Match L${j+1}`, keys: [lowerRemainder[j], lowerRemainder[j+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, undefined]}, this.stage.options.bestOf);
+				const match = await matchManager.create({
+					name: `Match L${j+1}`, 
+					keys: [lowerRemainder[j], lowerRemainder[j+1]], 
+					tournament: this.stage.tournament.id, 
+					newkeys: [winnerKey, undefined]
+				}, this.stage.options.bestOf);
 				round.addMatch(match);
 			}
 
@@ -78,8 +88,16 @@ class DoubleEliminationStageBehaviour extends AbstractStageBehaviour {
 		}
 
 		if(i < this.stage.options.numberOfRounds) {
-			const round = new RoundModel({id: nanoid(16), name: `Round ${i+1}`, matches: []}, this.stage);
-			const match = await matchManager.create({name: `Match F1`, keys: [upperRemainder[0], lowerRemainder[0]], tournament: this.stage.tournament.id}, this.stage.options.bestOf);
+			const round = new RoundModel({
+				id: nanoid(16), 
+				name: `Round ${i+1}`, 
+				matches: []
+			}, this.stage);
+			const match = await matchManager.create({
+				name: `Match F1`, 
+				keys: [upperRemainder[0], lowerRemainder[0]], 
+				tournament: this.stage.tournament.id
+			}, this.stage.options.bestOf);
 			round.addMatch(match);
 			rounds.push(round);
 		}

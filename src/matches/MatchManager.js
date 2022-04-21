@@ -1,4 +1,5 @@
 const { nanoid } = require("nanoid");
+const logger = require("../logging/Logger");
 const MatchModel = require("./MatchModel");
 const MatchScheduler = require("./MatchScheduler");
 
@@ -29,8 +30,9 @@ class MatchManager {
 			teams[key] = undefined;
 			finished[key] = false;
 		});
-		
-		const match = new MatchModel({id, name, startDate, endDate, keys, newKeys, games, finished, teams, tournament});
+		const match = new MatchModel({
+			id, name, startDate, endDate, keys, newKeys, games, finished, teams, tournament
+		});
 
 		await this.collection.insertOne(match.toDocument());
 
@@ -38,7 +40,9 @@ class MatchManager {
 	}
 
 	updateDate(id, startDate, endDate) {
-		return this.collection.updateOne({id}, {$set: {startDate: startDate.valueOf(), endDate: endDate.valueOf()}});
+		return this.collection.updateOne(
+			{id}, 
+			{$set: {startDate: startDate.valueOf(), endDate: endDate.valueOf()}});
 	}
 
 	async addGameProof(id, gameIndex, key, proof) {
@@ -69,17 +73,12 @@ class MatchManager {
 
 		for(const game of match.games) {
 			for(const key of match.keys) {
-				if(key == loser) {
-					game.scores[key] = 0;
-				}
-				else {
-					game.scores[key] = 1;
-				}
+				if(key == loser) game.scores[key] = 0;
+				else game.scores[key] = 1;
 			}
 		}
 
 		await this.collection.replaceOne({id}, match);
-
 	}
 
 	async setFinished(id, key, team) {

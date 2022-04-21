@@ -4,7 +4,8 @@ const BREAK_LENGTH = 15;
 
 class MatchScheduler {
 	async scheduleStage(matchManager, stage) {
-		const slots = this.findSlots(stage.maximalDate, stage.minimalDate, stage.maximalTime, stage.minimalTime, stage.defaultMatchLength);
+		const slots = this.findSlots(stage.maximalDate, stage.minimalDate, stage.maximalTime, 
+			stage.minimalTime, stage.defaultMatchLength);
 		const slotsPerRound = Math.floor(slots.length / stage.rounds.length);
 		
 		if(slotsPerRound === 0) {

@@ -41,7 +41,11 @@ class SingleEliminationStageBehaviour extends AbstractStageBehaviour {
 		}
 
 		while(remainder.length > 1 && i < this.stage.options.numberOfRounds) {
-			const round = new RoundModel({id: nanoid(16), name: `Round ${i+1}`, matches: []}, this.stage);
+			const round = new RoundModel({
+				id: nanoid(16), 
+				name: `Round ${i+1}`, 
+				matches: []
+			}, this.stage);
 			let newRemainder = [];
 
 			for(let j = 0; j < remainder.length; j+=2) {
@@ -54,7 +58,12 @@ class SingleEliminationStageBehaviour extends AbstractStageBehaviour {
 				const winnerKey = nanoid(8);
 				newRemainder.push(winnerKey);
 
-				const match = await matchManager.create({name: `Match ${j/2+1}`, keys: [remainder[j], remainder[j+1]], tournament: this.stage.tournament.id, newkeys: [winnerKey, undefined]}, this.stage.options.bestOf);
+				const match = await matchManager.create({
+					name: `Match ${j/2+1}`, 
+					keys: [remainder[j], remainder[j+1]], 
+					tournament: this.stage.tournament.id, 
+					newkeys: [winnerKey, undefined]
+				}, this.stage.options.bestOf);
 
 				round.addMatch(match);
 			}

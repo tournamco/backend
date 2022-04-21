@@ -1,7 +1,8 @@
 const GameModel = require("./GameModel");
 
 class MatchModel {
-	constructor({id, name, startDate, endDate, keys, newKeys, games, finished, teams, tournament}) {
+	constructor({id, name, startDate, endDate, keys, newKeys, games, finished, teams, 
+			tournament}) {
 		this.id = id;
 		this.name = name;
 		this.startDate = startDate;

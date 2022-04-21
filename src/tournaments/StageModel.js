@@ -6,7 +6,8 @@ const SingleEliminationStageBehaviour = require("./behaviour/SingleEliminationSt
 const DoubleEliminationStageBehaviour = require("./behaviour/DoubleEliminationStageBehaviour");
 
 class StageModel {
-    constructor({type, name, numberOfParticipants, rounds, minimalDate, maximalDate, minimalTime, maximalTime, options, freeKeys, winners}, parent) {
+    constructor({type, name, numberOfParticipants, rounds, minimalDate, maximalDate, minimalTime, 
+            maximalTime, options, freeKeys, winners}, parent) {
         this.type = type;
         this.name = name;
         this.numberOfParticipants = numberOfParticipants;

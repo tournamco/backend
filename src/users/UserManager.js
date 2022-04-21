@@ -32,7 +32,8 @@ class UserManager {
 	}
 
 	hashPassword(password) {
-		return crypto.createHmac("sha512", config.users.passwordSalt).update(password).digest("hex");
+		return crypto.createHmac("sha512", config.users.passwordSalt)
+			.update(password).digest("hex");
 	}
 
 	get(data) {
